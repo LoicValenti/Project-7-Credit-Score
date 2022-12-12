@@ -1,0 +1,10 @@
+List of the threads used:
+
+- https://towardsdatascience.com/the-f1-score-bec2bbc38aa6
+- https://stackoverflow.com/questions/59963911/how-to-write-a-custom-f1-loss-function-with-weighted-average-for-keras
+- https://www.kaggle.com/code/locvalenti/best-loss-function-for-f1-score-metric/edit
+- https://www.kaggle.com/code/guglielmocamporese/macro-f1-score-keras/notebook
+- https://medium.com/@thongonary/how-to-compute-f1-score-for-each-epoch-in-keras-a1acd17715a2
+- https://www.tensorflow.org/addons/api_docs/python/tfa/metrics/F1Score
+- https://stats.stackexchange.com/questions/304977/can-i-use-a-tiny-validation-set
+- https://www.ncbi.nlm.nih.gov/pubmed/18255701
