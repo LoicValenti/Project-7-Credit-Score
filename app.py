@@ -20,7 +20,7 @@ def predict():
     """
     client_id = [int(x) for x in request.form.values()]
     #if client_id[0] in client_predictions["SK_ID_CURR"].values:
-    prediction = client_predictions[client_predictions["SK_ID_CURR"] == client_id[0]]
+    prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id[0]]
 
     output = round(prediction["TARGET"], 0)
         
