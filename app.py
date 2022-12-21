@@ -19,7 +19,7 @@ def predict():
     For rendering results on HTML GUI
     """
     client_id = request.form.values()
-    if client_id in client_predictions["SK_ID_CURR"].values():
+    if client_id in client_predictions["SK_ID_CURR"].values:
         prediction = client_predictions[client_predictions["SK_ID_CURR"] == client_id]
 
         output = round(prediction["TARGET"], 0)
