@@ -35,9 +35,9 @@ def predict():
                 "index.html", prediction_text="Client's application was accepted"
             )
     else:
-    return render_template(
-        "index.html", prediction_text="Client's application is not registered in the database"
-            )
+        return render_template(
+            "index.html", prediction_text="Client's application is not registered in the database"
+                )
         
 
 if __name__ == "__main__":
