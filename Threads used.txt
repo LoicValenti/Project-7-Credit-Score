@@ -8,3 +8,9 @@ List of the threads used:
 - https://www.tensorflow.org/addons/api_docs/python/tfa/metrics/F1Score
 - https://stats.stackexchange.com/questions/304977/can-i-use-a-tiny-validation-set
 - https://www.ncbi.nlm.nih.gov/pubmed/18255701
+- https://medium.com/@0D0AResearch/deploy-it-using-heroku-to-continuously-build-and-deploy-a-deep-learning-powered-web-application-d3ebb41a74c7
+- https://arxiv.org/pdf/1609.04836.pdf
+- https://medium.com/coding-blocks/deploy-machine-learning-model-on-heroku-dc799ef8ec86
+- https://github.com/iRahulPandey/Heroku_Deploy
+- https://learnpython.com/blog/object-serialization-in-python/
+- https://analyticsindiamag.com/step-by-step-guide-to-deploy-an-ml-model-using-heroku/

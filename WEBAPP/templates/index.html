@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ML Model | Credit default detection</title>
+    <meta
+      name="description"
+      content="This is a simple demonstration of ML deployment"
+    />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index,follow" />
+
+    <title>Salary Prediction Model using Neural Network</title>
+  </head>
+
+  <body style="background-color: rgb(0, 0, 0)">
+    <section class="hero" align="center">
+      <h1
+        style="
+          background-color: rgb(0, 0, 0);
+          color: white;
+          padding: 0rem;
+          margin: 6rem;
+          font-size: 2.4rem;
+          font-family: Arial;
+        "
+      >
+        Credit Default Model
+      </h1>
+      <h2
+        style="
+          background-color: rgb(0, 0, 0);
+          color: white;
+          padding: 0rem;
+          margin: 2rem;
+          font-size: 1.5rem;
+          font-family: cursive;
+        "
+      >
+        This model is based on Neural Networks
+      </h2>
+      <h3
+        style="
+          background-color: rgb(0, 0, 0);
+          color: white;
+          padding: 0rem;
+          margin: 2rem;
+          font-size: 1rem;
+          font-family: cursive;
+        "
+      >
+        Input features: <br />
+        Client ID
+      </h3>
+      <form
+        action="{{ url_for('predict')}}"
+        method="post"
+        class="form"
+        style="
+          background-color: rgb(212, 212, 212);
+          color: rgb(0, 0, 0);
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          padding: 0rem;
+          margin: 4rem;
+          font-size: 1rem;
+          font-family: Arial, Helvetica, sans-serif;
+        "
+      >
+      <label for="quantity">Client ID:</label>
+      <input type="number" id="CLIENT_ID" name="Client ID" min="1" max="10000000">
+        <div style="margin: 0.3rem">
+          <label for="test_score">Test Score:</label>
+          <select name="test_score_ddn" id="test_scr">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+        <div style="margin: 0.3rem">
+          <label for="interview_score">Interview Score:</label>
+          <select name="interview_score_ddn" id="interview_scr">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          class="btn"
+          style="
+            margin: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            background: rgb(72, 137, 223);
+            border: none;
+            font-size: 1rem;
+            color: white;
+            border-radius: 1rem;
+            cursor: pointer;
+          "
+        >
+          Predict Salary
+        </button>
+      </form>
+    </section>
+    <h3
+      style="
+        background-color: rgb(0, 0, 0);
+        color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 0rem;
+        margin: 4rem;
+        font-size: 1rem;
+        font-family: Arial, Helvetica, sans-serif;
+      "
+    >
+      {{ prediction_text }}
+    </h3>
+  </body>
+</html>
