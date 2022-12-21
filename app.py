@@ -18,7 +18,7 @@ def predict():
     """
     For rendering results on HTML GUI
     """
-    client_id = int(request.form.values())
+    client_id = float(request.form.values())
     if client_id in client_predictions["SK_ID_CURR"].to_list():
         prediction = client_predictions[client_predictions["SK_ID_CURR"] == client_id]
 
