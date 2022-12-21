@@ -18,27 +18,25 @@ def predict():
     """
     For rendering results on HTML GUI
     """
-    client_id = [int(x) for x in request.form.values()]
-    #if client_id[0] in client_predictions["SK_ID_CURR"].values:
-    prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id[0]]["TARGET"][0]
-
-    output = round(prediction, 0)
-        
-    if output == 1:
-        
-        return render_template(
-                "index.html", prediction_text="Client's application was refused"
-            )
-    else:
-        
-        return render_template(
-                "index.html", prediction_text="Client's application was accepted"
-            )
-    #else:
-    return render_template(
-            "index.html", prediction_text="Client's application is not registered in the database"
+    client_id = [int(x) for x in request.form.values()][0]
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id]["TARGET"][0]
+       
+        if prediction > 0.5000000:
+            
+            return render_template(
+                    "index.html", prediction_text="Client's application was refused with a probability of defaulting equals to {}".format(prediction)
                 )
-        
+        else:
+            
+            return render_template(
+                    "index.html", prediction_text="Client's application was accepted with a probability of defaulting equals to {}".format(prediction)
+                )
+    else:
+        return render_template(
+                "index.html", prediction_text="Client's application is not registered in the database"
+                    )
+            
 
 if __name__ == "__main__":
     app.run(debug=True)
