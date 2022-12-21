@@ -2,7 +2,7 @@
 import numpy as np
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
-filepath = "/Users/loicvalenti/Library/Mobile Documents/com~apple~CloudDocs/Formation Data Science/PROJET 7/Project-7-Credit-Score/test_model_NN1 (1).csv"
+filepath = "test_model_NN1 (1).csv"
 client_predictions = pd.read_csv(filepath)
 app = Flask(__name__)
 
