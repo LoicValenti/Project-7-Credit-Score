@@ -24,12 +24,12 @@ def predict():
         if prediction > 0.5000000:
             
             return render_template(
-                    "index.html", prediction_text="Client's application was refused with a probability of defaulting equals to {}".format(prediction)
+                    "index.html", prediction_text="Client's application was refused with {}% risk of defaulting".format(prediction*100)
                 )
         else:
             
             return render_template(
-                    "index.html", prediction_text="Client's application was accepted with a probability of defaulting equals to {}".format(prediction)
+                    "index.html", prediction_text="Client's application was accepted with {}% risk of defaulting".format(prediction*100)
                 )
     else:
         return render_template(
