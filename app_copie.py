@@ -14,7 +14,7 @@ from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import numpy as np
-import pickle
+#import pickle
 ### Setup ###################################################
 app = dash.Dash(__name__)
 app.title = 'Machine Learning Model Deployment'
@@ -25,33 +25,29 @@ database = pd.read_csv(filepath_database)
 target = pd.read_csv(filepath_target)
 database["TARGET"] = target["TARGET"]
 ### AGE GRAPH PLACEHOLDER ###################################################
-age_data = pd.DataFrame()
 age_data = database.loc[:,('TARGET', 'DAYS_BIRTH')]
-age_data['YEARS_BIRTH'] = (age_data['DAYS_BIRTH'] / 365)
+age_data['YEARS_BIRTH'] = age_data['DAYS_BIRTH'] / 365
 
 # Bin the age data
 age_data['YEARS_BINNED'] = pd.cut(age_data['YEARS_BIRTH'], bins = np.linspace(20, 70, num = 11))
-
 age_groups  = age_data.groupby('YEARS_BINNED').mean()
-age_data['target'] = age_data['TARGET'] *100
-age_data['bins'] = age_groups.index.astype(str)
-fig =  px.bar(age_data, x =age_groups.index.astype(str) ,y = 'target')
+age_groups["target"]  = age_groups["TARGET"]*100
+age_groups["bins"] = age_groups.index
+fig =  px.bar(age_groups, x = "bins" , y = "target")
 #plt.bar(age_groups.index.astype(str), 100 * age_groups['TARGET'])
 
 
 ### load ML model ###########################################
 ### App Layout ###############################################
-app.layout = html.Div([
+app.layout = html.Div(children = [
     dcc.Input(id='client_id', value='Client ID', type = "number", min=2, max=1000000),
     
-    html.Br(),
+    html.Div(id='prediction output'),
 
     dcc.Graph(
         id='example-graph',
         figure=fig
-    ),
-    
-    html.Div(id='prediction output'),
+    )
     
     ], style = {'padding': '0px 0px 0px 150px', 'width': '50%'})
 ### Callback to produce the prediction #########################
