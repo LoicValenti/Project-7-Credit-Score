@@ -76,11 +76,11 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     }),
     dcc.Graph(id='EXT_SOURCE_2'),
 
-    html.H4("Analysis of AMT_REQ_CREDIT_BUREAU_WEEK's effect", style={
+    html.H4("Analysis of CODE_GENDER's effect", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
-    dcc.Graph(id='AMT_REQ_CREDIT_BUREAU_WEEK'),
+    dcc.Graph(id='CODE_GENDER'),
 ])
 
 
@@ -137,38 +137,6 @@ def show_client_position_age_group_graph(client_id):
     return fig
 
 
-"""
-@app.callback(
-    Output('EXT_SOURCE_1', "figure"),
-    Input('client_id', 'value'))
-def show_client_position_EXT_SOURCE_1(client_id):
-    if client_id in client_predictions["SK_ID_CURR"].values:
-        fig = px.histogram(database["EXT_SOURCE_1"],
-                           title="EXT SOURCE 1")
-
-        fig.update_layout(
-            plot_bgcolor=colors['background'],
-            paper_bgcolor=colors['background'],
-            font_color=colors['text']
-        )
-        fig.add_vline(
-            x=database.loc[client_id, "EXT_SOURCE_1"],
-            line_width=3, line_dash="dash",
-            line_color="red")
-        return fig
-    else:
-        fig = px.line(database, x = database[""]
-                      title="EXT SOURCE 1")
-
-        fig.update_layout(
-            plot_bgcolor=colors['background'],
-            paper_bgcolor=colors['background'],
-            font_color=colors['text']
-        )
-        return fig
-"""
-
-
 @app.callback(
     Output("EXT_SOURCE_1", "figure"),
     Input("client_id", "value"))
@@ -196,33 +164,6 @@ def display_graph_EXT_SOURCE_1(client_id):
 
         # fig.update_traces(marker_color='green')
     return fig
-
-    """
-    fig = px.histogram(
-        database, x="EXT_SOURCE_1",
-        range_x=[-0.1, 1],
-        nbins=10,
-        barmode="group",
-        marginal="box",
-        log_y=True,
-        hover_data=database.columns)
-    fig.update_layout(
-        bargap=0.01,
-        plot_bgcolor=colors['background'],
-        paper_bgcolor=colors['background'],
-        font_color=colors['text'])
-    
-    group_labels = 'EXT_SOURCE_1'
-
-    # Create distplot with custom bin_size, and without rug plot
-    fig = ff.create_distplot([database["EXT_SOURCE_1"]], [group_labels], bin_size=.05, show_rug=False)
-    fig.update_layout(
-        bargap=0.01,
-        plot_bgcolor=colors['background'],
-        paper_bgcolor=colors['background'],
-        font_color=colors['text'])
-    return fig
-    """
 
 
 @app.callback(
@@ -253,42 +194,15 @@ def display_graph_EXT_SOURCE_2(client_id):
         # fig.update_traces(marker_color='green')
     return fig
 
-    """
-    fig = px.histogram(
-        database, x="EXT_SOURCE_1",
-        range_x=[-0.1, 1],
-        nbins=10,
-        barmode="group",
-        marginal="box",
-        log_y=True,
-        hover_data=database.columns)
-    fig.update_layout(
-        bargap=0.01,
-        plot_bgcolor=colors['background'],
-        paper_bgcolor=colors['background'],
-        font_color=colors['text'])
-
-    group_labels = 'EXT_SOURCE_1'
-
-    # Create distplot with custom bin_size, and without rug plot
-    fig = ff.create_distplot([database["EXT_SOURCE_1"]], [group_labels], bin_size=.05, show_rug=False)
-    fig.update_layout(
-        bargap=0.01,
-        plot_bgcolor=colors['background'],
-        paper_bgcolor=colors['background'],
-        font_color=colors['text'])
-    return fig
-    """
-
 
 @app.callback(
-    Output("AMT_REQ_CREDIT_BUREAU_WEEK", "figure"),
+    Output("CODE_GENDER", "figure"),
     Input("client_id", "value"))
-def display_graph_AMT_REQ_CREDIT_BUREAU_WEEK(client_id):
-    fig = px.box(
+def display_graph_CODE_GENDER(client_id):
+    fig = fig = px.histogram(
         database,
-        x="TARGET_STR",
-        y="AMT_REQ_CREDIT_BUREAU_WEEK",
+        x="CODE_GENDER",
+        color="TARGET",
         color_discrete_sequence=px.colors.qualitative.Alphabet
     )
     fig.update_layout(
@@ -298,40 +212,13 @@ def display_graph_AMT_REQ_CREDIT_BUREAU_WEEK(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "AMT_REQ_CREDIT_BUREAU_WEEK"]) * 100) / 100,
+            x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="red")
         return fig
 
         # fig.update_traces(marker_color='green')
     return fig
-
-    """
-    fig = px.histogram(
-        database, x="EXT_SOURCE_1",
-        range_x=[-0.1, 1],
-        nbins=10,
-        barmode="group",
-        marginal="box",
-        log_y=True,
-        hover_data=database.columns)
-    fig.update_layout(
-        bargap=0.01,
-        plot_bgcolor=colors['background'],
-        paper_bgcolor=colors['background'],
-        font_color=colors['text'])
-
-    group_labels = 'EXT_SOURCE_1'
-
-    # Create distplot with custom bin_size, and without rug plot
-    fig = ff.create_distplot([database["EXT_SOURCE_1"]], [group_labels], bin_size=.05, show_rug=False)
-    fig.update_layout(
-        bargap=0.01,
-        plot_bgcolor=colors['background'],
-        paper_bgcolor=colors['background'],
-        font_color=colors['text'])
-    return fig
-    """
 
 
 ### Run the App ###############################################
