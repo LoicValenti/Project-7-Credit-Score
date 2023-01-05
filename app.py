@@ -1,7 +1,8 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import plotly.express as px
-import plotly.figure_factory as ff
+
+# import plotly.figure_factory as ff
 
 # import lime as lime
 filepath = "Credit Application Results.csv"
@@ -12,8 +13,9 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc
-import numpy as np
+
+# import dash_bootstrap_components as dbc
+# import numpy as np
 
 # import pickle
 ### Setup ###################################################
