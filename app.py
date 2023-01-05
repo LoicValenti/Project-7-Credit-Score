@@ -202,7 +202,7 @@ def display_graph_CODE_GENDER(client_id):
     fig = fig = px.histogram(
         database,
         x="CODE_GENDER",
-        color="TARGET",
+        color="TARGET_STR",
         color_discrete_sequence=px.colors.qualitative.Alphabet
     )
     fig.update_layout(
