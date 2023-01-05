@@ -81,6 +81,12 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'color': colors['text']
     }),
     dcc.Graph(id='CODE_GENDER'),
+
+    html.H4("Analysis of FLAG_OWN_CAR's effect", style={
+        'textAlign': 'center',
+        'color': colors['text']
+    }),
+    dcc.Graph(id='FLAG_OWN_CAR'),
 ])
 
 
@@ -202,6 +208,32 @@ def display_graph_CODE_GENDER(client_id):
     fig = fig = px.histogram(
         database,
         x="CODE_GENDER",
+        color="TARGET_STR",
+        color_discrete_sequence=px.colors.qualitative.Alphabet
+    )
+    fig.update_layout(
+        bargap=0.01,
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['background'],
+        font_color=colors['text'])
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        fig.add_vline(
+            x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
+            line_width=3, line_dash="dash",
+            line_color="red")
+        return fig
+
+        # fig.update_traces(marker_color='green')
+    return fig
+
+
+@app.callback(
+    Output("FLAG_OWN_CAR", "figure"),
+    Input("client_id", "value"))
+def display_graph_FLAG_OWN_CAR(client_id):
+    fig = fig = px.histogram(
+        database,
+        x="FLAG_OWN_CAR",
         color="TARGET_STR",
         color_discrete_sequence=px.colors.qualitative.Alphabet
     )
