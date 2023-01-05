@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.figure_factory as ff
 
 # import lime as lime
-filepath = "/Users/loicvalenti/Library/Mobile Documents/com~apple~CloudDocs/Formation Data Science/PROJET 7/Project-7-Credit-Score/Credit Application Results.csv"
+filepath = "Credit Application Results.csv
 client_predictions = pd.read_csv(filepath)
 # Dash_App.py
 ### Import Packages ########################################
@@ -25,10 +25,10 @@ colors = {
     'background': '#111111',
     'text': '#FFFBF6'
 }
-filepath_database = "Project-7-Credit-Score/Dataset_for_webapp.csv"
+filepath_database = "Dataset_for_webapp.csv"
 
-filepath_age_groups = "Project-7-Credit-Score/age_groups.csv"
-filepath_target = "Project-7-Credit-Score/Credit Application Results.csv"
+filepath_age_groups = "age_groups.csv"
+filepath_target = "Credit Application Results.csv"
 target = pd.read_csv(filepath_target)
 database = pd.read_csv(filepath_database)
 target.loc[target["TARGET"] > 0.5, "TARGET"] = 1
