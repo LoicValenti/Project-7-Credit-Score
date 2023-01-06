@@ -41,6 +41,8 @@ database.insert(1, "TARGET", target["TARGET"])
 database["TARGET"] = [i for i in target["TARGET"]]
 database.loc[database["TARGET"] == 1.0, "TARGET_STR"] = "Defaulted"
 database.loc[database["TARGET"] == 0.0, "TARGET_STR"] = "Repayed"
+database["DAYS_BIRTH"] *= 69
+database["DAYS_EMPLOYED"] *= 17912.000000 / 365
 age_groups = pd.read_csv(filepath_age_groups)
 ### load ML model ###########################################
 ### App Layout ###############################################
@@ -87,6 +89,18 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'color': colors['text']
     }),
     dcc.Graph(id='FLAG_OWN_CAR'),
+
+    html.H4("Analysis of DAYS_BIRTH's effect", style={
+        'textAlign': 'center',
+        'color': colors['text']
+    }),
+    dcc.Graph(id='DAYS_BIRTH'),
+
+    html.H4("Analysis of DAYS_EMPLOYED's effect", style={
+        'textAlign': 'center',
+        'color': colors['text']
+    }),
+    dcc.Graph(id='DAYS_EMPLOYED'),
 ])
 
 
@@ -121,6 +135,7 @@ def show_client_position_age_group_graph(client_id):
                       "(50.0, 55.0]", "(55.0, 60.0]", "(60.0, 65.0]", "(65.0, 70.0]"]
 
     fig = px.bar(x=x_ticks_labels, y=100 * age_groups['TARGET'],
+                 color_discrete_sequence=px.colors.qualitative.Alphabet_r,
                  title="Failure to Repay by Age Group",
                  labels={
                      "y": "Failure to Repay (%)"
@@ -154,7 +169,7 @@ def display_graph_EXT_SOURCE_1(client_id):
         barmode="relative",
         color="TARGET_STR",
         log_y=True,
-        color_discrete_sequence=px.colors.qualitative.Alphabet,
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         hover_data=database.columns)
     fig.update_layout(
         bargap=0.01,
@@ -182,7 +197,7 @@ def display_graph_EXT_SOURCE_2(client_id):
         nbins=50,
         barmode="relative",
         color="TARGET_STR",
-        color_discrete_sequence=px.colors.qualitative.Alphabet,
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         log_y=True,
         hover_data=database.columns)
     fig.update_layout(
@@ -205,11 +220,12 @@ def display_graph_EXT_SOURCE_2(client_id):
     Output("CODE_GENDER", "figure"),
     Input("client_id", "value"))
 def display_graph_CODE_GENDER(client_id):
-    fig = fig = px.histogram(
+    fig = px.histogram(
         database,
         x="CODE_GENDER",
         color="TARGET_STR",
-        color_discrete_sequence=px.colors.qualitative.Alphabet
+        barmode="group",
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
     )
     fig.update_layout(
         bargap=0.01,
@@ -231,11 +247,14 @@ def display_graph_CODE_GENDER(client_id):
     Output("FLAG_OWN_CAR", "figure"),
     Input("client_id", "value"))
 def display_graph_FLAG_OWN_CAR(client_id):
-    fig = fig = px.histogram(
+    fig = px.histogram(
         database,
         x="FLAG_OWN_CAR",
-        color="TARGET_STR",
-        color_discrete_sequence=px.colors.qualitative.Alphabet
+        color="TARGET",
+        barmode="group",
+        histnorm="percent",
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+
     )
     fig.update_layout(
         bargap=0.01,
@@ -244,7 +263,64 @@ def display_graph_FLAG_OWN_CAR(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
+            x=round((database.loc[client_id, "FLAG_OWN_CAR"]) * 100) / 100,
+            line_width=3, line_dash="dash",
+            line_color="red")
+        return fig
+
+        # fig.update_traces(marker_color='green')
+    return fig
+
+
+@app.callback(
+    Output("DAYS_BIRTH", "figure"),
+    Input("client_id", "value"))
+def display_graph_DAYS_BIRTH(client_id):
+    fig = px.histogram(
+        database,
+        x="DAYS_BIRTH",
+        color="TARGET",
+        marginal="violin",
+        barmode="group",
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+    )
+    fig.update_layout(
+        bargap=0.01,
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['background'],
+        font_color=colors['text'])
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        fig.add_vline(
+            x=round((database.loc[client_id, "DAYS_BIRTH"]) * 100) / 100,
+            line_width=3, line_dash="dash",
+            line_color="red")
+        return fig
+
+        # fig.update_traces(marker_color='green')
+    return fig
+
+
+@app.callback(
+    Output("DAYS_EMPLOYED", "figure"),
+    Input("client_id", "value"))
+def display_graph_DAYS_EMPLOYED(client_id):
+    fig = px.histogram(
+        database,
+        x="DAYS_EMPLOYED",
+        color="TARGET",
+        barmode="group",
+        log_y=True,
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+
+    )
+    fig.update_layout(
+        bargap=0.01,
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['background'],
+        font_color=colors['text'])
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        fig.add_vline(
+            x=round((database.loc[client_id, "DAYS_EMPLOYED"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="red")
         return fig
