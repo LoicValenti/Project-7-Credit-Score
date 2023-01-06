@@ -153,7 +153,7 @@ def show_client_position_age_group_graph(client_id):
             # scaling back to full range from mapped value on [0,1]
             # % 10 because of the number of bins
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
     return fig
 
@@ -180,7 +180,7 @@ def display_graph_EXT_SOURCE_1(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
 
         # fig.update_traces(marker_color='green')
@@ -209,7 +209,7 @@ def display_graph_EXT_SOURCE_2(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "EXT_SOURCE_2"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
 
         # fig.update_traces(marker_color='green')
@@ -236,7 +236,7 @@ def display_graph_CODE_GENDER(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
 
         # fig.update_traces(marker_color='green')
@@ -265,7 +265,7 @@ def display_graph_FLAG_OWN_CAR(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "FLAG_OWN_CAR"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
 
         # fig.update_traces(marker_color='green')
@@ -322,7 +322,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "DAYS_EMPLOYED"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
 
         # fig.update_traces(marker_color='green')
