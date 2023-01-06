@@ -133,7 +133,7 @@ def update_output(client_id):
         if prediction > 0.5000000:
             output = "Client's application was refused with {}% risk of defaulting".format(prediction * 100)
         else:
-            output = "Client's application was accepted with {}% risk of defaulting".format(prediction * 100)
+            output = "Client's application was accepted with {}% chance of repaying".format((1 - prediction) * 100)
 
     else:
         output = "Client's application is not in the database"
@@ -353,7 +353,7 @@ def display_graph_AMT_CREDIT(client_id):
     fig = px.histogram(
         database,
         x="AMT_CREDIT",
-        color="TARGET",
+        color="TARGET_STR",
         log_y=True,
         marginal="box",
         barmode="group",
@@ -382,7 +382,7 @@ def display_graph_AMT_ANNUITY(client_id):
     fig = px.histogram(
         database,
         x="AMT_ANNUITY",
-        color="TARGET",
+        color="TARGET_STR",
         marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
