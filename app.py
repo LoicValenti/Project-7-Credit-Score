@@ -181,6 +181,7 @@ def display_graph_EXT_SOURCE_1(client_id):
         range_x=[0, 1],
         nbins=50,
         barmode="relative",
+        marginal="box",
         color="TARGET_STR",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
@@ -210,6 +211,7 @@ def display_graph_EXT_SOURCE_2(client_id):
         range_x=[0, 1],
         nbins=50,
         barmode="relative",
+        marginal="box",
         color="TARGET_STR",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         log_y=True,
@@ -294,7 +296,7 @@ def display_graph_DAYS_BIRTH(client_id):
         database,
         x="DAYS_BIRTH",
         color="TARGET",
-        marginal="violin",
+        marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
     )
@@ -323,6 +325,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
         x="DAYS_EMPLOYED",
         color="TARGET_STR",
         barmode="group",
+        marginal="box",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
 
