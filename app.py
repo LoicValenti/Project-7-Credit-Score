@@ -250,7 +250,7 @@ def display_graph_FLAG_OWN_CAR(client_id):
     fig = px.histogram(
         database,
         x="FLAG_OWN_CAR",
-        color="TARGET",
+        color="TARGET_STR",
         barmode="group",
         histnorm="percent",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
@@ -307,7 +307,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
     fig = px.histogram(
         database,
         x="DAYS_EMPLOYED",
-        color="TARGET",
+        color="TARGET_STR",
         barmode="group",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
