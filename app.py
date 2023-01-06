@@ -295,7 +295,7 @@ def display_graph_DAYS_BIRTH(client_id):
     fig = px.histogram(
         database,
         x="DAYS_BIRTH",
-        color="TARGET",
+        color="TARGET_STR",
         marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
@@ -355,7 +355,7 @@ def display_graph_AMT_CREDIT(client_id):
         x="AMT_CREDIT",
         color="TARGET",
         log_y=True,
-        marginal="rug",
+        marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
     )
@@ -383,7 +383,7 @@ def display_graph_AMT_ANNUITY(client_id):
         database,
         x="AMT_ANNUITY",
         color="TARGET",
-        marginal="rug",
+        marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
     )
