@@ -68,77 +68,286 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     }),
     dcc.Graph(id='Age_group_graph'),
 
-    html.H4("Analysis of EXT_SOURCE_1's effect", style={
+    html.H4("Analysis of the first external credit rating", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='EXT_SOURCE_1'),
 
-    html.H4("Analysis of EXT_SOURCE_2's effect", style={
+    html.Div(id='explanation_EXT_SOURCE_1', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Analysis of second external credit rating", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='EXT_SOURCE_2'),
 
-    html.H4("Analysis of CODE_GENDER's effect", style={
+    html.Div(id='explanation_EXT_SOURCE_2', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Analysis of the gender's default behaviour", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='CODE_GENDER'),
 
-    html.H4("Analysis of FLAG_OWN_CAR's effect", style={
+    html.Div(id='explanation_CODE_GENDER', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Analysis of car owners default behaviour ", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='FLAG_OWN_CAR'),
 
-    html.H4("Analysis of DAYS_BIRTH's effect", style={
+    html.Div(id='explanation_FLAG_OWN_CAR', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Analysis of the effect of age", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='DAYS_BIRTH'),
 
-    html.H4("Analysis of DAYS_EMPLOYED's effect", style={
+    html.Div(id='explanation_DAYS_BIRTH', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Analysis of the number of years of employment", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='DAYS_EMPLOYED'),
 
-    html.H4("Analysis of AMT_CREDIT's effect", style={
+    html.Div(id='explanation_DAYS_EMPLOYED', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Description of default compared to the amount proposed", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='AMT_CREDIT'),
 
-    html.H4("Analysis of AMT_ANNUITY's effect", style={
+    html.Div(id='explanation_AMT_CREDIT', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
+
+    html.H4("Description of default compared to the annuity ", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
     dcc.Graph(id='AMT_ANNUITY'),
+
+    html.Div(id='explanation_AMT_ANNUITY', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
 ])
 
 
 ### Callback to produce the prediction #########################
+
 @app.callback(
     Output('prediction_output', 'children'),
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-
-        """
-        Place holder for the graph printing methods and so on.
-        """
-
         if prediction > 0.5000000:
             output = "Client's application was refused with {}% risk of defaulting".format(prediction * 100)
         else:
-            output = "Client's application was accepted with {}% chance of repaying".format((1 - prediction) * 100)
+            output = "Client's application was accepted with {}% chance of servicing the debt".format(
+                (1 - prediction) * 100)
 
     else:
         output = "Client's application is not in the database"
 
     return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_EXT_SOURCE_1', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_EXT_SOURCE_2', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_CODE_GENDER', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_FLAG_OWN_CAR', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_DAYS_BIRTH', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_DAYS_EMPLOYED', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_AMT_CREDIT', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('explanation_AMT_ANNUITY', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+        if prediction > 0.5000000:
+            output = "Placeholder for explanation of this variable's effect on the refusal"
+        else:
+            output = "Placeholder for explanation of this variable's effect on the acceptance"
+
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+"""
+
+@app.callback(
+    Output("dictionnary", 'children'),
+    Input('prediction_output', 'children'))
+def update_explanation(client_id):
+    dictionary = dict()
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
+
+        if prediction > 0.5000000:
+            dictionary["explanation_EXT_SOURCE_1"] = "placeholder"
+            dictionary["explanation_EXT_SOURCE_2"] = "placeholder"
+            dictionary["explanation_CODE_GENDER"] = "placeholder"
+            dictionary["explanation_FLAG_OWN_CAR"] = "placeholder"
+            dictionary["explanation_DAYS_BIRTH"] = "placeholder"
+            dictionary["explanation_DAYS_EMPLOYED"] = "placeholder"
+            dictionary["explanation_AMT_CREDIT"] = "placeholder"
+            dictionary["explanation_AMT_ANNUITY"] = "placeholder"
+        else:
+            dictionary["explanation_EXT_SOURCE_1"] = "placeholder"
+            dictionary["explanation_EXT_SOURCE_2"] = "placeholder"
+            dictionary["explanation_CODE_GENDER"] = "placeholder"
+            dictionary["explanation_FLAG_OWN_CAR"] = "placeholder"
+            dictionary["explanation_DAYS_BIRTH"] = "placeholder"
+            dictionary["explanation_DAYS_EMPLOYED"] = "placeholder"
+            dictionary["explanation_AMT_CREDIT"] = "placeholder"
+            dictionary["explanation_AMT_ANNUITY"] = "placeholder"
+
+    else:
+        dictionary["not_in_database"] = "placeholder"
+
+    return dictionary
+"""
 
 
 @app.callback(
