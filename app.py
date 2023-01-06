@@ -293,7 +293,7 @@ def display_graph_DAYS_BIRTH(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "DAYS_BIRTH"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="red")
+            line_color="blue")
         return fig
 
         # fig.update_traces(marker_color='green')
