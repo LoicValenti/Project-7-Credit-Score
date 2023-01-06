@@ -43,6 +43,8 @@ database.loc[database["TARGET"] == 1.0, "TARGET_STR"] = "Defaulted"
 database.loc[database["TARGET"] == 0.0, "TARGET_STR"] = "Repayed"
 database["DAYS_BIRTH"] *= 69
 database["DAYS_EMPLOYED"] *= 17912.000000 / 365
+database["AMT_CREDIT"] *= 4.050000e+06
+database["AMT_ANNUITY"] *= 258025.500000
 age_groups = pd.read_csv(filepath_age_groups)
 ### load ML model ###########################################
 ### App Layout ###############################################
@@ -101,6 +103,18 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'color': colors['text']
     }),
     dcc.Graph(id='DAYS_EMPLOYED'),
+
+    html.H4("Analysis of AMT_CREDIT's effect", style={
+        'textAlign': 'center',
+        'color': colors['text']
+    }),
+    dcc.Graph(id='AMT_CREDIT'),
+
+    html.H4("Analysis of AMT_ANNUITY's effect", style={
+        'textAlign': 'center',
+        'color': colors['text']
+    }),
+    dcc.Graph(id='AMT_ANNUITY'),
 ])
 
 
@@ -321,6 +335,63 @@ def display_graph_DAYS_EMPLOYED(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
             x=round((database.loc[client_id, "DAYS_EMPLOYED"]) * 100) / 100,
+            line_width=3, line_dash="dash",
+            line_color="blue")
+        return fig
+
+        # fig.update_traces(marker_color='green')
+    return fig
+
+
+@app.callback(
+    Output("AMT_CREDIT", "figure"),
+    Input("client_id", "value"))
+def display_graph_AMT_CREDIT(client_id):
+    fig = px.histogram(
+        database,
+        x="AMT_CREDIT",
+        color="TARGET",
+        log_y=True,
+        marginal="rug",
+        barmode="group",
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+    )
+    fig.update_layout(
+        bargap=0.01,
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['background'],
+        font_color=colors['text'])
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        fig.add_vline(
+            x=round((database.loc[client_id, "AMT_CREDIT"]) * 100) / 100,
+            line_width=3, line_dash="dash",
+            line_color="blue")
+        return fig
+
+        # fig.update_traces(marker_color='green')
+    return fig
+
+
+@app.callback(
+    Output("AMT_ANNUITY", "figure"),
+    Input("client_id", "value"))
+def display_graph_AMT_ANNUITY(client_id):
+    fig = px.histogram(
+        database,
+        x="AMT_ANNUITY",
+        color="TARGET",
+        marginal="rug",
+        barmode="group",
+        color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+    )
+    fig.update_layout(
+        bargap=0.01,
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['background'],
+        font_color=colors['text'])
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        fig.add_vline(
+            x=round((database.loc[client_id, "AMT_ANNUITY"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="blue")
         return fig
