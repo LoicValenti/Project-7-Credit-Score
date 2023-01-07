@@ -186,14 +186,15 @@ def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 1 is a credit score rating from other banking agencies." \
                  "The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
-                 "Your score was {} away from the median".format(client_id,
-                                                                 round(stats.percentileofscore(
-                                                                     database["EXT_SOURCE_1"],
-                                                                     database.loc[client_id, "EXT_SOURCE_1"])),
-                                                                 abs(database.loc[
-                                                                         database["TARGET_STR"] == "Repayed",
-                                                                         "EXT_SOURCE_1"].median() -
-                                                                     database.loc[client_id, "EXT_SOURCE_1"]))
+                 "Your score was {} away from the median of customers that serviced the debt obligations".format(
+            client_id,
+            round(stats.percentileofscore(
+                database["EXT_SOURCE_1"],
+                database.loc[client_id, "EXT_SOURCE_1"])),
+            abs(database.loc[
+                    database["TARGET_STR"] == "Repayed",
+                    "EXT_SOURCE_1"].median() -
+                database.loc[client_id, "EXT_SOURCE_1"]))
     else:
         output = "Client's application is not in the database"
 
@@ -207,14 +208,15 @@ def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 2 is a credit score rating from other banking agencies." \
                  "The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
-                 "Your score was {} away from the median".format(client_id,
-                                                                 round(stats.percentileofscore(
-                                                                     database["EXT_SOURCE_2"],
-                                                                     database.loc[client_id, "EXT_SOURCE_2"])),
-                                                                 abs(database.loc[
-                                                                         database["TARGET_STR"] == "Repayed",
-                                                                         "EXT_SOURCE_2"].median() -
-                                                                     database.loc[client_id, "EXT_SOURCE_2"]))
+                 "Your score was {} away from the median of customers that serviced the debt obligations".format(
+            client_id,
+            round(stats.percentileofscore(
+                database["EXT_SOURCE_2"],
+                database.loc[client_id, "EXT_SOURCE_2"])),
+            abs(database.loc[
+                    database["TARGET_STR"] == "Repayed",
+                    "EXT_SOURCE_2"].median() -
+                database.loc[client_id, "EXT_SOURCE_2"]))
     else:
         output = "Client's application is not in the database"
 
