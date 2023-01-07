@@ -190,7 +190,9 @@ def update_output(client_id):
                                                                  round(stats.percentileofscore(
                                                                      database["EXT_SOURCE_1"],
                                                                      database.loc[client_id, "EXT_SOURCE_1"])),
-                                                                 abs(database["EXT_SOURCE_1"].median() -
+                                                                 abs(database.loc[
+                                                                         database["TARGET_STR"] == "Repayed",
+                                                                         "EXT_SOURCE_1"].median() -
                                                                      database.loc[client_id, "EXT_SOURCE_1"]))
     else:
         output = "Client's application is not in the database"
@@ -209,7 +211,9 @@ def update_output(client_id):
                                                                  round(stats.percentileofscore(
                                                                      database["EXT_SOURCE_2"],
                                                                      database.loc[client_id, "EXT_SOURCE_2"])),
-                                                                 abs(database["EXT_SOURCE_2"].median() -
+                                                                 abs(database.loc[
+                                                                         database["TARGET_STR"] == "Repayed",
+                                                                         "EXT_SOURCE_2"].median() -
                                                                      database.loc[client_id, "EXT_SOURCE_2"]))
     else:
         output = "Client's application is not in the database"
