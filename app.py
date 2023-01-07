@@ -15,7 +15,7 @@ from dash import html
 from dash.dependencies import Input, Output, State
 
 # import dash_bootstrap_components as dbc
-# import numpy as np
+import scipy.stats as stats
 
 # import pickle
 ### Setup ###################################################
@@ -183,12 +183,14 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "External Source 1 is a credit score rating from other banking agencies." \
+                 "The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
+                 "Your score was {} away from the median".format(client_id,
+                                                                 round(stats.percentileofscore(
+                                                                     database["EXT_SOURCE_1"],
+                                                                     database.loc[client_id, "EXT_SOURCE_1"])),
+                                                                 abs(database["EXT_SOURCE_1"].median() -
+                                                                     database.loc[client_id, "EXT_SOURCE_1"]))
     else:
         output = "Client's application is not in the database"
 
@@ -200,12 +202,14 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "External Source 2 is a credit score rating from other banking agencies." \
+                 "The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
+                 "Your score was {} away from the median".format(client_id,
+                                                                 round(stats.percentileofscore(
+                                                                     database["EXT_SOURCE_2"],
+                                                                     database.loc[client_id, "EXT_SOURCE_2"])),
+                                                                 abs(database["EXT_SOURCE_2"].median() -
+                                                                     database.loc[client_id, "EXT_SOURCE_2"]))
     else:
         output = "Client's application is not in the database"
 
@@ -217,12 +221,7 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "People amongst the gender group 0 have a much higher risk of defaulting than the gender group 1"
     else:
         output = "Client's application is not in the database"
 
