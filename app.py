@@ -257,12 +257,17 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "The client's age is a strong factor for prediction of default." \
+                 "Client number {} placed on the {}th percentile. " \
+                 "The client is {} away from the median of customers that serviced the debt obligations".format(
+            client_id,
+            round(stats.percentileofscore(
+                database["DAYS_BIRTH"],
+                database.loc[client_id, "DAYS_BIRTH"])),
+            abs(database.loc[
+                    database["TARGET_STR"] == "Repayed",
+                    "DAYS_BIRTH"].median() -
+                database.loc[client_id, "DAYS_BIRTH"]))
     else:
         output = "Client's application is not in the database"
 
@@ -274,12 +279,17 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "The client's number of years of employment is a strong factor for prediction of default." \
+                 "Client number {} placed on the {}th percentile. " \
+                 "The client is {} away from the median of customers that serviced the debt obligations".format(
+            client_id,
+            round(stats.percentileofscore(
+                database["DAYS_EMPLOYED"],
+                database.loc[client_id, "DAYS_EMPLOYED"])),
+            abs(database.loc[
+                    database["TARGET_STR"] == "Repayed",
+                    "DAYS_EMPLOYED"].median() -
+                database.loc[client_id, "DAYS_EMPLOYED"]))
     else:
         output = "Client's application is not in the database"
 
@@ -291,12 +301,18 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "The amount of the credit asked by the customer." \
+                 "Client number {} placed on the {}th percentile. " \
+                 "The client asked for a credit amount {} away from the median of" \
+                 " customers that serviced the debt obligations".format(
+            client_id,
+            round(stats.percentileofscore(
+                database["AMT_CREDIT"],
+                database.loc[client_id, "AMT_CREDIT"])),
+            abs(database.loc[
+                    database["TARGET_STR"] == "Repayed",
+                    "AMT_CREDIT"].median() -
+                database.loc[client_id, "AMT_CREDIT"]))
     else:
         output = "Client's application is not in the database"
 
@@ -308,12 +324,18 @@ def update_output(client_id):
     Input('client_id', 'value'))
 def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
-            output = "Placeholder for explanation of this variable's effect on the refusal"
-        else:
-            output = "Placeholder for explanation of this variable's effect on the acceptance"
-
+        output = "The amount of the annuity." \
+                 "Client number {} placed on the {}th percentile. " \
+                 "The client asked for a credit amount {} away from the median of" \
+                 " customers that serviced the debt obligations".format(
+            client_id,
+            round(stats.percentileofscore(
+                database["AMT_ANNUITY"],
+                database.loc[client_id, "AMT_ANNUITY"])),
+            abs(database.loc[
+                    database["TARGET_STR"] == "Repayed",
+                    "AMT_ANNUITY"].median() -
+                database.loc[client_id, "AMT_ANNUITY"]))
     else:
         output = "Client's application is not in the database"
 
