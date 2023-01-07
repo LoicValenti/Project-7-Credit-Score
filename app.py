@@ -63,6 +63,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'textAlign': 'left',
         'color': colors['text']
     }),
+
     html.H4("Age groups compared to default percentage", style={
         'textAlign': 'center',
         'color': colors['text']
@@ -401,8 +402,6 @@ def show_client_position_age_group_graph(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
             x=round(database.loc[client_id, "DAYS_BIRTH"]) % 10,
-            # scaling back to full range from mapped value on [0,1]
-            # % 10 because of the number of bins
             line_width=3, line_dash="dash",
             line_color="blue")
         return fig
@@ -435,7 +434,6 @@ def display_graph_EXT_SOURCE_1(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -465,7 +463,6 @@ def display_graph_EXT_SOURCE_2(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -492,7 +489,6 @@ def display_graph_CODE_GENDER(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -521,7 +517,6 @@ def display_graph_FLAG_OWN_CAR(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -549,7 +544,6 @@ def display_graph_DAYS_BIRTH(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -579,7 +573,6 @@ def display_graph_DAYS_EMPLOYED(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -608,7 +601,6 @@ def display_graph_AMT_CREDIT(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
@@ -636,7 +628,6 @@ def display_graph_AMT_ANNUITY(client_id):
             line_color="blue")
         return fig
 
-        # fig.update_traces(marker_color='green')
     return fig
 
 
