@@ -372,7 +372,7 @@ def show_client_position_age_group_graph(client_id):
     fig.update_traces(marker_color='green')
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round(database.loc[client_id, "DAYS_BIRTH"] * 69.120548) % 10,
+            x=round(database.loc[client_id, "DAYS_BIRTH"]),
             # scaling back to full range from mapped value on [0,1]
             # % 10 because of the number of bins
             line_width=3, line_dash="dash",
