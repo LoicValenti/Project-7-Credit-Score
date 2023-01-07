@@ -42,6 +42,7 @@ database["TARGET"] = [i for i in target["TARGET"]]
 database.loc[database["TARGET"] == 1.0, "TARGET_STR"] = "Defaulted"
 database.loc[database["TARGET"] == 0.0, "TARGET_STR"] = "Repayed"
 database["DAYS_BIRTH"] *= 69
+database["DAYS_BIRTH"] += 20
 database["DAYS_EMPLOYED"] *= 17912.000000 / 365
 database["AMT_CREDIT"] *= 4.050000e+06
 database["AMT_ANNUITY"] *= 258025.500000
