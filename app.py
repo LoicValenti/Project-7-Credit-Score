@@ -75,7 +75,9 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         options=[{"label": i, "value": i} for i in variable_indicators],
         placeholder="Select graph"
     ),
-    html.Div(id="graph_output"),
+    html.Div([
+        dcc.Graph(id='graph_output')
+    ]),
     """
         html.H4("Age groups compared to default percentage", style={
             'textAlign': 'center',
@@ -196,7 +198,7 @@ def update_output(client_id):
 
 # Skeleton for the new graphing function
 @app.callback(
-    Output('graph_output', 'children'),
+    Output(component_id='graph_output', component_property='figure'),
     [Input("variable_choice", "value"),
      Input("client_id", "value")]
 )
