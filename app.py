@@ -75,7 +75,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         options=[{"label": i, "value": i} for i in variable_indicators],
         placeholder="Select graph"
     ),
-    html.Div(dcc.Graph(id='graph_output')),
+    html.Div(id="graph_output"),
     """
         html.H4("Age groups compared to default percentage", style={
             'textAlign': 'center',
