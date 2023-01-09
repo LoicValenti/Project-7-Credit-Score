@@ -202,7 +202,7 @@ def update_output(client_id):
     [Input("variable_choice", "value"),
      Input("client_id", "value")]
 )
-def trace_graph(variable_choice="EXT_SOURCE_1", client_id):
+def trace_graph(variable_choice, client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         if variable_choice == 'EXT_SOURCE_1':
             fig = px.histogram(
