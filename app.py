@@ -46,6 +46,12 @@ database["DAYS_BIRTH"] += 20
 database["DAYS_EMPLOYED"] *= 17912.000000 / 365
 database["AMT_CREDIT"] *= 4.050000e+06
 database["AMT_ANNUITY"] *= 258025.500000
+
+# Variable names
+
+variable_indicators = ["Age_group", 'EXT_SOURCE_1', "EXT_SOURCE_2", "DAYS_EMPLOYED", "DAYS_BIRTH", "FLAG_OWN_CAR",
+                       "AMT_CREDIT", "AMT_ANNUITY", " CODE_GENDER"]
+
 age_groups = pd.read_csv(filepath_age_groups)
 ### load ML model ###########################################
 ### App Layout ###############################################
@@ -63,12 +69,18 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'textAlign': 'left',
         'color': colors['text']
     }),
+    dcc.Dropdown(
+        id="variable_choice",
+        options=[{"label": i, "value": i} for i in variable_indicators],
+        placeholder="Select graph"
+    ),
+    html.Div(id='graph_output'),
 
     html.H4("Age groups compared to default percentage", style={
         'textAlign': 'center',
         'color': colors['text']
     }),
-    dcc.Graph(id='Age_group_graph'),
+    html.Div(id='Age_group_graph'),
 
     html.H4("Analysis of the first external credit rating", style={
         'textAlign': 'center',
@@ -178,6 +190,33 @@ def update_output(client_id):
         output = "Client's application is not in the database"
 
     return f'{output}.'
+
+
+# Skeleton for the new graphing function
+@app.callback(
+    Output('graph_output', 'children'),
+    Input("variable_choice", "value"),
+    Input("client_id", "value")
+)
+def trace_graph(variable_choice, client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        if variable_choice == 'EXT_SOURCE_1':
+
+            output = "External Source 1 is a credit score rating from other banking agencies." \
+                     "The higher your score on this metric the better. Client number {} placed on the {}th percentile. "
+            "Your score was {} away from the median of customers that serviced the debt obligations".format(
+                client_id,
+                round(stats.percentileofscore(
+                    database["EXT_SOURCE_1"],
+                    database.loc[client_id, "EXT_SOURCE_1"])),
+                abs(database.loc[
+                        database["TARGET_STR"] == "Repayed",
+                        "EXT_SOURCE_1"].median() -
+                    database.loc[client_id, "EXT_SOURCE_1"]))
+            return output
+        else:
+            output = "Client's application is not in the database"
+            return output
 
 
 @app.callback(
@@ -380,7 +419,7 @@ def update_explanation(client_id):
 
 
 @app.callback(
-    Output('Age_group_graph', "figure"),
+    Output('Age_group_graph', "children"),
     Input('client_id', 'value'))
 def show_client_position_age_group_graph(client_id):
     x_ticks_labels = ["(20.0, 25.0", "(25.0, 30.0]", "(30.0, 35.0]", "(35.0, 40.0]", "(40.0, 45.0]", "(45.0, 50.0]",
