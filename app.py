@@ -221,8 +221,6 @@ def trace_graph(variable_choice, client_id):
                 line_width=3, line_dash="dash",
                 line_color="blue")
             return fig
-
-        return fig
     return "Client is not in the database"
 
 
