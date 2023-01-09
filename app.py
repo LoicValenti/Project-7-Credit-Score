@@ -197,8 +197,8 @@ def update_output(client_id):
 # Skeleton for the new graphing function
 @app.callback(
     Output('graph_output', 'children'),
-    Input("variable_choice", "value"),
-    Input("client_id", "value")
+    [Input("variable_choice", "value"),
+     Input("client_id", "value")]
 )
 def trace_graph(variable_choice, client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
