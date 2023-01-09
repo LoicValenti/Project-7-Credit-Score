@@ -25,7 +25,7 @@ app.title = 'Machine Learning Model Deployment'
 
 server = app.server
 colors = {
-    'background': '#111111',
+    'background': '#000000',
     'text': '#FFFBF6'
 }
 filepath_database = "Dataset_for_webapp.csv"
@@ -50,14 +50,15 @@ database["AMT_ANNUITY"] *= 258025.500000
 
 # Variable names
 
-variable_indicators = ["Age_group", 'EXT_SOURCE_1', "EXT_SOURCE_2", "DAYS_EMPLOYED", "DAYS_BIRTH", "FLAG_OWN_CAR",
-                       "AMT_CREDIT", "AMT_ANNUITY", " CODE_GENDER"]
+variable_indicators = ["Age group comparison", 'External source 1 comparison', "External source 2 comparison",
+                       "Duration of employment comparison", "Age group detailed comparison", "Car ownership comparison",
+                       "Credit amount comparison", "Credit annuity comparison", "Gender distribution comparison"]
 
 age_groups = pd.read_csv(filepath_age_groups)
 ### load ML model ###########################################
 ### App Layout ###############################################
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
-    html.Div(children='Interactive Client Application Reviewer', style={
+    html.H1(children='Interactive Client Application Reviewer', style={
         'textAlign': 'center',
         'color': colors['text']
     }),
@@ -78,6 +79,10 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     html.Div([
         dcc.Graph(id='graph_output')
     ]),
+    html.Div(id='graph_output_explanation', style={
+        'textAlign': 'left',
+        'color': colors['text']
+    }),
     """
         html.H4("Age groups compared to default percentage", style={
             'textAlign': 'center',
@@ -198,33 +203,31 @@ def update_output(client_id):
 
 # Skeleton for the new graphing function
 @app.callback(
-    Output(component_id='graph_output', component_property='figure'),
+    [Output(component_id='graph_output', component_property='figure'),
+     Output('graph_output_explanation', 'children')],
     [Input("variable_choice", "value"),
      Input("client_id", "value")]
 )
 def trace_graph(variable_choice, client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        if variable_choice == 'EXT_SOURCE_1':
-            fig = px.histogram(
-                database, x="EXT_SOURCE_1",
-                range_x=[0, 1],
-                nbins=50,
-                barmode="relative",
-                marginal="box",
-                color="TARGET_STR",
-                log_y=True,
-                color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-                hover_data=database.columns)
-            fig.update_layout(
-                bargap=0.01,
-                plot_bgcolor=colors['background'],
-                paper_bgcolor=colors['background'],
-                font_color=colors['text'])
-            fig.add_vline(
-                x=round((database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
-                line_width=3, line_dash="dash",
-                line_color="blue")
-            return fig
+        if variable_choice == 'External source 1 comparison':
+            return display_graph_EXT_SOURCE_1(client_id), update_output_EXT_SOURCE_1(client_id)
+        if variable_choice == 'External source 2 comparison':
+            return display_graph_EXT_SOURCE_2(client_id), update_output_EXT_SOURCE_2(client_id)
+        if variable_choice == 'Gender distribution comparison':
+            return display_graph_CODE_GENDER(client_id), update_output_CODE_GENDER(client_id)
+        if variable_choice == 'Car ownership comparison':
+            return display_graph_FLAG_OWN_CAR(client_id), update_output_FLAG_OWN_CAR(client_id)
+        if variable_choice == 'Age group detailed comparison':
+            return display_graph_DAYS_BIRTH(client_id), update_output_DAYS_BIRTH(client_id)
+        if variable_choice == 'Duration of employment comparison':
+            return display_graph_DAYS_EMPLOYED(client_id), update_output_DAYS_EMPLOYED(client_id)
+        if variable_choice == 'Credit amount comparison':
+            return display_graph_AMT_CREDIT(client_id), update_output_AMT_CREDIT(client_id)
+        if variable_choice == 'Credit annuity comparison':
+            return display_graph_AMT_ANNUITY(client_id), update_output_AMT_ANNUITY(client_id)
+        if variable_choice == "Age group comparison":
+            return show_client_position_age_group_graph(client_id), "Age group comparison"
 
     x_ticks_labels = ["(20.0, 25.0", "(25.0, 30.0]", "(30.0, 35.0]", "(35.0, 40.0]", "(40.0, 45.0]", "(45.0, 50.0]",
                       "(50.0, 55.0]", "(55.0, 60.0]", "(60.0, 65.0]", "(65.0, 70.0]"]
@@ -241,13 +244,10 @@ def trace_graph(variable_choice, client_id):
         paper_bgcolor=colors['background'],
         font_color=colors['text']
     )
-    return fig
+    return fig, "Enter the necessary information above"
 
 
-@app.callback(
-    Output('explanation_EXT_SOURCE_1', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_EXT_SOURCE_1(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 1 is a credit score rating from other banking agencies." \
                  "The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
@@ -266,10 +266,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_EXT_SOURCE_2', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_EXT_SOURCE_2(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 2 is a credit score rating from other banking agencies." \
                  "The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
@@ -288,10 +285,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_CODE_GENDER', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_CODE_GENDER(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "People amongst the gender group 0 have a much higher risk of defaulting than the gender group 1"
     else:
@@ -300,10 +294,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_FLAG_OWN_CAR', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_FLAG_OWN_CAR(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
         if prediction > 0.5000000:
@@ -317,10 +308,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_DAYS_BIRTH', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_DAYS_BIRTH(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's age is a strong factor for prediction of default." \
                  "Client number {} placed on the {}th percentile. " \
@@ -339,10 +327,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_DAYS_EMPLOYED', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_DAYS_EMPLOYED(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's number of years of employment is a strong factor for prediction of default." \
                  "Client number {} placed on the {}th percentile. " \
@@ -361,10 +346,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_AMT_CREDIT', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_AMT_CREDIT(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The amount of the credit asked by the customer." \
                  "Client number {} placed on the {}th percentile. " \
@@ -384,10 +366,7 @@ def update_output(client_id):
     return f'{output}.'
 
 
-@app.callback(
-    Output('explanation_AMT_ANNUITY', 'children'),
-    Input('client_id', 'value'))
-def update_output(client_id):
+def update_output_AMT_ANNUITY(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The amount of the annuity." \
                  "Client number {} placed on the {}th percentile. " \
@@ -443,9 +422,6 @@ def update_explanation(client_id):
 """
 
 
-@app.callback(
-    Output('Age_group_graph', "children"),
-    Input('client_id', 'value'))
 def show_client_position_age_group_graph(client_id):
     x_ticks_labels = ["(20.0, 25.0", "(25.0, 30.0]", "(30.0, 35.0]", "(35.0, 40.0]", "(40.0, 45.0]", "(45.0, 50.0]",
                       "(50.0, 55.0]", "(55.0, 60.0]", "(60.0, 65.0]", "(65.0, 70.0]"]
@@ -462,7 +438,6 @@ def show_client_position_age_group_graph(client_id):
         paper_bgcolor=colors['background'],
         font_color=colors['text']
     )
-    fig.update_traces(marker_color='green')
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
             x=round(database.loc[client_id, "DAYS_BIRTH"]) % 10,
@@ -472,9 +447,6 @@ def show_client_position_age_group_graph(client_id):
     return fig
 
 
-@app.callback(
-    Output("EXT_SOURCE_1", "figure"),
-    Input("client_id", "value"))
 def display_graph_EXT_SOURCE_1(client_id):
     fig = px.histogram(
         database, x="EXT_SOURCE_1",
@@ -501,9 +473,6 @@ def display_graph_EXT_SOURCE_1(client_id):
     return fig
 
 
-@app.callback(
-    Output("EXT_SOURCE_2", "figure"),
-    Input("client_id", "value"))
 def display_graph_EXT_SOURCE_2(client_id):
     fig = px.histogram(
         database, x="EXT_SOURCE_2",
@@ -530,9 +499,6 @@ def display_graph_EXT_SOURCE_2(client_id):
     return fig
 
 
-@app.callback(
-    Output("CODE_GENDER", "figure"),
-    Input("client_id", "value"))
 def display_graph_CODE_GENDER(client_id):
     fig = px.histogram(
         database,
@@ -584,9 +550,6 @@ def display_graph_FLAG_OWN_CAR(client_id):
     return fig
 
 
-@app.callback(
-    Output("DAYS_BIRTH", "figure"),
-    Input("client_id", "value"))
 def display_graph_DAYS_BIRTH(client_id):
     fig = px.histogram(
         database,
@@ -611,9 +574,6 @@ def display_graph_DAYS_BIRTH(client_id):
     return fig
 
 
-@app.callback(
-    Output("DAYS_EMPLOYED", "figure"),
-    Input("client_id", "value"))
 def display_graph_DAYS_EMPLOYED(client_id):
     fig = px.histogram(
         database,
@@ -640,9 +600,6 @@ def display_graph_DAYS_EMPLOYED(client_id):
     return fig
 
 
-@app.callback(
-    Output("AMT_CREDIT", "figure"),
-    Input("client_id", "value"))
 def display_graph_AMT_CREDIT(client_id):
     fig = px.histogram(
         database,
@@ -668,9 +625,6 @@ def display_graph_AMT_CREDIT(client_id):
     return fig
 
 
-@app.callback(
-    Output("AMT_ANNUITY", "figure"),
-    Input("client_id", "value"))
 def display_graph_AMT_ANNUITY(client_id):
     fig = px.histogram(
         database,
