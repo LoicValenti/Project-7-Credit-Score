@@ -20,6 +20,7 @@ import scipy.stats as stats
 # import pickle
 ### Setup ###################################################
 app = dash.Dash(__name__)
+app.config.suppress_callback_exceptions = True
 app.title = 'Machine Learning Model Deployment'
 
 server = app.server
@@ -74,7 +75,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         options=[{"label": i, "value": i} for i in variable_indicators],
         placeholder="Select graph"
     ),
-    html.Div(id='graph_output'),
+    html.Div(id='graph_output')
     """
         html.H4("Age groups compared to default percentage", style={
             'textAlign': 'center',
