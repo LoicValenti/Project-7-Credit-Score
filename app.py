@@ -201,22 +201,30 @@ def update_output(client_id):
 def trace_graph(variable_choice, client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         if variable_choice == 'EXT_SOURCE_1':
+        fig = px.histogram(
+            database, x="EXT_SOURCE_1",
+            range_x=[0, 1],
+            nbins=50,
+            barmode="relative",
+            marginal="box",
+            color="TARGET_STR",
+            log_y=True,
+            color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+            hover_data=database.columns)
+        fig.update_layout(
+            bargap=0.01,
+            plot_bgcolor=colors['background'],
+            paper_bgcolor=colors['background'],
+            font_color=colors['text'])
+        if client_id in client_predictions["SK_ID_CURR"].values:
+            fig.add_vline(
+                x=round((database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
+                line_width=3, line_dash="dash",
+                line_color="blue")
+            return fig
 
-            output = "External Source 1 is a credit score rating from other banking agencies." \
-                     "The higher your score on this metric the better. Client number {} placed on the {}th percentile. "
-            "Your score was {} away from the median of customers that serviced the debt obligations".format(
-                client_id,
-                round(stats.percentileofscore(
-                    database["EXT_SOURCE_1"],
-                    database.loc[client_id, "EXT_SOURCE_1"])),
-                abs(database.loc[
-                        database["TARGET_STR"] == "Repayed",
-                        "EXT_SOURCE_1"].median() -
-                    database.loc[client_id, "EXT_SOURCE_1"]))
-            return output
-        else:
-            output = "Client's application is not in the database"
-            return output
+        return fig
+    return "Client is not in the database"
 
 
 @app.callback(
