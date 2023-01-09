@@ -75,100 +75,101 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         placeholder="Select graph"
     ),
     html.Div(id='graph_output'),
-
-    html.H4("Age groups compared to default percentage", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    html.Div(id='Age_group_graph'),
-
-    html.H4("Analysis of the first external credit rating", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='EXT_SOURCE_1'),
-
-    html.Div(id='explanation_EXT_SOURCE_1', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Analysis of second external credit rating", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='EXT_SOURCE_2'),
-
-    html.Div(id='explanation_EXT_SOURCE_2', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Analysis of the gender's default behaviour", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='CODE_GENDER'),
-
-    html.Div(id='explanation_CODE_GENDER', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Analysis of car owners default behaviour ", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='FLAG_OWN_CAR'),
-
-    html.Div(id='explanation_FLAG_OWN_CAR', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Analysis of the effect of age", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='DAYS_BIRTH'),
-
-    html.Div(id='explanation_DAYS_BIRTH', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Analysis of the number of years of employment", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='DAYS_EMPLOYED'),
-
-    html.Div(id='explanation_DAYS_EMPLOYED', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Description of default compared to the amount proposed", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='AMT_CREDIT'),
-
-    html.Div(id='explanation_AMT_CREDIT', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
-
-    html.H4("Description of default compared to the annuity ", style={
-        'textAlign': 'center',
-        'color': colors['text']
-    }),
-    dcc.Graph(id='AMT_ANNUITY'),
-
-    html.Div(id='explanation_AMT_ANNUITY', style={
-        'textAlign': 'left',
-        'color': colors['text']
-    }),
+    """
+        html.H4("Age groups compared to default percentage", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        html.Div(id='Age_group_graph'),
+    
+        html.H4("Analysis of the first external credit rating", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='EXT_SOURCE_1'),
+    
+        html.Div(id='explanation_EXT_SOURCE_1', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Analysis of second external credit rating", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='EXT_SOURCE_2'),
+    
+        html.Div(id='explanation_EXT_SOURCE_2', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Analysis of the gender's default behaviour", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='CODE_GENDER'),
+    
+        html.Div(id='explanation_CODE_GENDER', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Analysis of car owners default behaviour ", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='FLAG_OWN_CAR'),
+    
+        html.Div(id='explanation_FLAG_OWN_CAR', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Analysis of the effect of age", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='DAYS_BIRTH'),
+    
+        html.Div(id='explanation_DAYS_BIRTH', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Analysis of the number of years of employment", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='DAYS_EMPLOYED'),
+    
+        html.Div(id='explanation_DAYS_EMPLOYED', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Description of default compared to the amount proposed", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='AMT_CREDIT'),
+    
+        html.Div(id='explanation_AMT_CREDIT', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    
+        html.H4("Description of default compared to the annuity ", style={
+            'textAlign': 'center',
+            'color': colors['text']
+        }),
+        dcc.Graph(id='AMT_ANNUITY'),
+    
+        html.Div(id='explanation_AMT_ANNUITY', style={
+            'textAlign': 'left',
+            'color': colors['text']
+        }),
+    """
 ])
 
 
