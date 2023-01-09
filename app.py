@@ -225,7 +225,23 @@ def trace_graph(variable_choice, client_id):
                 line_width=3, line_dash="dash",
                 line_color="blue")
             return fig
-    return "Client is not in the database"
+
+    x_ticks_labels = ["(20.0, 25.0", "(25.0, 30.0]", "(30.0, 35.0]", "(35.0, 40.0]", "(40.0, 45.0]", "(45.0, 50.0]",
+                      "(50.0, 55.0]", "(55.0, 60.0]", "(60.0, 65.0]", "(65.0, 70.0]"]
+
+    fig = px.bar(x=x_ticks_labels, y=100 * age_groups['TARGET'],
+                 color_discrete_sequence=px.colors.qualitative.Alphabet_r,
+                 title="Failure to Repay by Age Group",
+                 labels={
+                     "y": "Failure to Repay (%)"
+                 })
+
+    fig.update_layout(
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['background'],
+        font_color=colors['text']
+    )
+    return fig
 
 
 @app.callback(
