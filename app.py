@@ -42,10 +42,21 @@ database.insert(1, "TARGET", target["TARGET"])
 database["TARGET"] = [i for i in target["TARGET"]]
 database.loc[database["TARGET"] == 1.0, "TARGET_STR"] = "Defaulted"
 database.loc[database["TARGET"] == 0.0, "TARGET_STR"] = "Repayed"
-database["DAYS_BIRTH"] *= 69
-database["DAYS_BIRTH"] += 20
-database["DAYS_EMPLOYED"] *= 17912.000000 / 365
-database["AMT_CREDIT"] *= 4.050000e+06
+
+
+def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
+    return (max_wanted - min_wanted) * (i - actual_min) / (actual_max - actual_min) + min_wanted
+
+
+database["DAYS_BIRTH"] = [rescaling(i, 20, 69, 0.00001, 0.99999) for i in
+                          database["DAYS_BIRTH"]]  # scaling back from [0,1] to full range [20, 69]
+
+database["DAYS_EMPLOYED"] = [rescaling(i, 0, 49, 0.00001, 0.99999) for i in
+                             database["DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [20, 69]
+
+database["AMT_CREDIT"] = [rescaling(i, 100, 2000000, 0.00001, 0.99999) for i in
+                          database["AMT_CREDIT"]]  # scaling back from [0,1] to full range [20, 69]
+
 database["AMT_ANNUITY"] *= 258025.500000
 
 # Variable names
@@ -64,7 +75,9 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     }),
     dcc.Input(id='client_id', value='Client ID', type="number", min=2, max=1000000, style={
         'textAlign': 'left',
-        'color': colors['background']
+        'color': colors['background'],
+        'width': '22.5%',
+        'display': 'inline-block'
     }),
 
     html.Div(id='prediction_output', style={
@@ -74,7 +87,8 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     dcc.Dropdown(
         id="variable_choice",
         options=[{"label": i, "value": i} for i in variable_indicators],
-        placeholder="Select graph"
+        placeholder="Select graph",
+        style={'width': '48%', 'display': 'inline-block'}
     ),
     html.Div([
         dcc.Graph(id='graph_output')
@@ -83,101 +97,6 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'textAlign': 'left',
         'color': colors['text']
     }),
-    """
-        html.H4("Age groups compared to default percentage", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        html.Div(id='Age_group_graph'),
-    
-        html.H4("Analysis of the first external credit rating", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='EXT_SOURCE_1'),
-    
-        html.Div(id='explanation_EXT_SOURCE_1', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Analysis of second external credit rating", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='EXT_SOURCE_2'),
-    
-        html.Div(id='explanation_EXT_SOURCE_2', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Analysis of the gender's default behaviour", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='CODE_GENDER'),
-    
-        html.Div(id='explanation_CODE_GENDER', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Analysis of car owners default behaviour ", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='FLAG_OWN_CAR'),
-    
-        html.Div(id='explanation_FLAG_OWN_CAR', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Analysis of the effect of age", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='DAYS_BIRTH'),
-    
-        html.Div(id='explanation_DAYS_BIRTH', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Analysis of the number of years of employment", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='DAYS_EMPLOYED'),
-    
-        html.Div(id='explanation_DAYS_EMPLOYED', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Description of default compared to the amount proposed", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='AMT_CREDIT'),
-    
-        html.Div(id='explanation_AMT_CREDIT', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    
-        html.H4("Description of default compared to the annuity ", style={
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
-        dcc.Graph(id='AMT_ANNUITY'),
-    
-        html.Div(id='explanation_AMT_ANNUITY', style={
-            'textAlign': 'left',
-            'color': colors['text']
-        }),
-    """
 ])
 
 
@@ -236,6 +155,7 @@ def trace_graph(variable_choice, client_id):
                  color_discrete_sequence=px.colors.qualitative.Alphabet_r,
                  title="Failure to Repay by Age Group",
                  labels={
+                     "x": "Age groups",
                      "y": "Failure to Repay (%)"
                  })
 
@@ -430,6 +350,7 @@ def show_client_position_age_group_graph(client_id):
                  color_discrete_sequence=px.colors.qualitative.Alphabet_r,
                  title="Failure to Repay by Age Group",
                  labels={
+                     "x": "Age Groups",
                      "y": "Failure to Repay (%)"
                  })
 
@@ -451,13 +372,17 @@ def display_graph_EXT_SOURCE_1(client_id):
     fig = px.histogram(
         database, x="EXT_SOURCE_1",
         range_x=[0, 1],
-        nbins=50,
         barmode="relative",
         marginal="box",
         color="TARGET_STR",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-        hover_data=database.columns)
+        hover_data=database.columns,
+        title="External credit rating 1 for client %s" % client_id,
+        labels={
+            "x": "External Credit Rating 1",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -483,7 +408,12 @@ def display_graph_EXT_SOURCE_2(client_id):
         color="TARGET_STR",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         log_y=True,
-        hover_data=database.columns)
+        hover_data=database.columns,
+        title="External credit rating 2 for client %s" % client_id,
+        labels={
+            "x": "External Credit Rating 2",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -506,7 +436,11 @@ def display_graph_CODE_GENDER(client_id):
         color="TARGET_STR",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-    )
+        title="Gender groups on default risk ",
+        labels={
+            "x": "Gender Groups",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -522,9 +456,6 @@ def display_graph_CODE_GENDER(client_id):
     return fig
 
 
-@app.callback(
-    Output("FLAG_OWN_CAR", "figure"),
-    Input("client_id", "value"))
 def display_graph_FLAG_OWN_CAR(client_id):
     fig = px.histogram(
         database,
@@ -533,8 +464,11 @@ def display_graph_FLAG_OWN_CAR(client_id):
         barmode="group",
         histnorm="percent",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-
-    )
+        title="Car ownership",
+        labels={
+            "x": "Car Ownership Groups",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -558,7 +492,11 @@ def display_graph_DAYS_BIRTH(client_id):
         marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-    )
+        title="Age distribution for client %s" % client_id,
+        labels={
+            "x": "Age in Years",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -583,8 +521,11 @@ def display_graph_DAYS_EMPLOYED(client_id):
         marginal="box",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-
-    )
+        title="Duration of employment for client %s" % client_id,
+        labels={
+            "x": "Employment in Years",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -609,7 +550,11 @@ def display_graph_AMT_CREDIT(client_id):
         marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-    )
+        title="Credit distribution for client %s" % client_id,
+        labels={
+            "x": "Credit Amount",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
@@ -633,7 +578,11 @@ def display_graph_AMT_ANNUITY(client_id):
         marginal="box",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-    )
+        title="Annuity distribution for client %s" % client_id,
+        labels={
+            "x": "Annuity Amount",
+            "y": "Count"
+        })
     fig.update_layout(
         bargap=0.01,
         plot_bgcolor=colors['background'],
