@@ -392,7 +392,7 @@ def show_client_position_age_group_graph(client_id):
         fig.add_vline(
             x=round(database.loc[client_id, "DAYS_BIRTH"]) % 10,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
     return fig
 
@@ -421,7 +421,7 @@ def display_graph_EXT_SOURCE_1(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -452,7 +452,7 @@ def display_graph_EXT_SOURCE_2(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "EXT_SOURCE_2"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -479,7 +479,7 @@ def display_graph_CODE_GENDER(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -507,7 +507,7 @@ def display_graph_FLAG_OWN_CAR(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "FLAG_OWN_CAR"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -535,7 +535,7 @@ def display_graph_DAYS_BIRTH(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "DAYS_BIRTH"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -564,7 +564,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "DAYS_EMPLOYED"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -593,7 +593,7 @@ def display_graph_AMT_CREDIT(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "AMT_CREDIT"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
@@ -621,7 +621,7 @@ def display_graph_AMT_ANNUITY(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "AMT_ANNUITY"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="blue")
+            line_color="cyan")
         return fig
 
     return fig
