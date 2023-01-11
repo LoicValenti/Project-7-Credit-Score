@@ -353,7 +353,7 @@ def update_output_AMT_CREDIT(client_id):
 
 def update_output_AMT_ANNUITY(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        output = "The amount of the annuity." + str(database.loc[client_id, "ANNUITY"]) + \
+        output = "The amount of the annuity." + str(database.loc[client_id, "AMT_ANNUITY"]) + \
                  " Client number {} placed on the {}th percentile. " \
                  " The client's annuity are {} away from the median of" \
                  " customers that serviced the debt obligations".format(
