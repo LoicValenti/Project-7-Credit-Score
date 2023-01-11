@@ -519,7 +519,7 @@ def display_graph_DAYS_BIRTH(client_id):
         x="DAYS_BIRTH",
         color="TARGET_STR",
         marginal="box",
-        barmode="group",
+        barmode="relative",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         title="Age distribution for client %s" % client_id,
         labels={
@@ -546,7 +546,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
         database,
         x="DAYS_EMPLOYED",
         color="TARGET_STR",
-        barmode="group",
+        barmode="relative",
         marginal="box",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
@@ -577,7 +577,7 @@ def display_graph_AMT_CREDIT(client_id):
         color="TARGET_STR",
         log_y=True,
         marginal="box",
-        barmode="group",
+        barmode="relative",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         title="Credit distribution for client %s" % client_id,
         labels={
@@ -605,7 +605,7 @@ def display_graph_AMT_ANNUITY(client_id):
         x="AMT_ANNUITY",
         color="TARGET_STR",
         marginal="box",
-        barmode="group",
+        barmode="relative",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         title="Annuity distribution for client %s" % client_id,
         labels={
