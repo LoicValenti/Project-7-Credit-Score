@@ -479,7 +479,7 @@ def display_graph_CODE_GENDER(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="cyan")
+            line_color="blue")
         return fig
 
     return fig
@@ -507,7 +507,7 @@ def display_graph_FLAG_OWN_CAR(client_id):
         fig.add_vline(
             x=round((database.loc[client_id, "FLAG_OWN_CAR"]) * 100) / 100,
             line_width=3, line_dash="dash",
-            line_color="cyan")
+            line_color="blue")
         return fig
 
     return fig
