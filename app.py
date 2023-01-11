@@ -22,15 +22,10 @@ import scipy.stats as stats
 # import pickle
 ### Setup ###################################################
 app = dash.Dash(__name__)
-app.config.suppress_callback_exceptions = True
 app.title = 'Machine Learning Model Deployment'
 
-
-def description():
-    return "Review Customers' Applications"
-
-
 server = app.server
+
 colors = {
     'background': '#000000',
     'text': '#FFFBF6'
