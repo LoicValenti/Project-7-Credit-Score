@@ -117,6 +117,7 @@ app.layout = html.Div(children=[
                     html.Div(id='graph_output_explanation', style={
                         'color': colors['text'],
                         'font-family': "Arial",
+                        'font-size': '20px',
                         'textAlign': 'center',
                         'width': "100%"
 
@@ -124,7 +125,7 @@ app.layout = html.Div(children=[
                              )
                 ],
                 style={
-                    "width": '50%',
+                    "width": '75%',
                     "margin": "0 auto"
                 },
             )
@@ -222,7 +223,7 @@ def update_output_EXT_SOURCE_1(client_id):
                  " on this metric. \n" \
                  " The higher your score on this metric the better." \
                  " Client number {} placed on the {}th percentile." \
-                 " Your score was {} away from the median of customers" \
+                 " It is {} away from the median of customers" \
                  " that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
