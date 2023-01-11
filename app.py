@@ -80,13 +80,14 @@ app.layout = html.Div(children=[
     html.H1(children='Interactive Client Application Reviewer', style={
         'textAlign': 'center',
         'color': colors['text'],
-        'font-family': "Arial",
+        'font-family': "Arial"
     }),
     dcc.Input(id='client_id', placeholder="Client's ID", value='Client ID', type="number", min=2, max=1000000, style={
         'textAlign': 'left',
         'color': colors['background'],
         'font-family': "Arial",
         'width': '22.5%',
+        'height': '27px',
         'display': 'inline-block',
         'margin-bottom': '15px'
     }),
@@ -94,6 +95,7 @@ app.layout = html.Div(children=[
         'textAlign': 'left',
         'color': colors['text'],
         'font-family': "Arial",
+        'font-size': "20px",
         'margin-bottom': '15px'
     }),
     dcc.Dropdown(
@@ -232,7 +234,7 @@ def update_output_EXT_SOURCE_1(client_id):
                      round(abs(database.loc[
                                    database["TARGET_STR"] == "Repayed",
                                    "EXT_SOURCE_1"].median() -
-                               database.loc[client_id, "EXT_SOURCE_1"])), 2)
+                               database.loc[client_id, "EXT_SOURCE_1"]), 3))
     else:
         output = "Client's application is not in the database"
 
@@ -242,18 +244,19 @@ def update_output_EXT_SOURCE_1(client_id):
 def update_output_EXT_SOURCE_2(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 2 is a credit score rating from other banking agencies." \
-                 "Client number: " + client_predictions["SK_ID_CURR"] + " placed" \
-                 + database.loc[client_id, "EXT_SOURCE_2"] + " on this metric." \
-                                                             " The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
-                                                             " Your score was {} away from the median of customers that serviced the debt obligations".format(
-            client_id,
-            round(stats.percentileofscore(
-                database["EXT_SOURCE_2"],
-                database.loc[client_id, "EXT_SOURCE_2"])),
-            round(abs(database.loc[
-                          database["TARGET_STR"] == "Repayed",
-                          "EXT_SOURCE_2"].median() -
-                      database.loc[client_id, "EXT_SOURCE_2"])), 2)
+                 "Client number: " + str(client_id) + " placed" \
+                 + str(database.loc[client_id, "EXT_SOURCE_2"]) + \
+                 " on this metric." \
+                 " The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
+                 " Your score was {} away from the median of customers that serviced the debt obligations".format(
+                     client_id,
+                     round(stats.percentileofscore(
+                         database["EXT_SOURCE_2"],
+                         database.loc[client_id, "EXT_SOURCE_2"])),
+                     round(abs(database.loc[
+                                   database["TARGET_STR"] == "Repayed",
+                                   "EXT_SOURCE_2"].median() -
+                               database.loc[client_id, "EXT_SOURCE_2"]), 2))
     else:
         output = "Client's application is not in the database"
 
