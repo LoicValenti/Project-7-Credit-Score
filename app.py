@@ -1,3 +1,5 @@
+from turtle import width
+
 import pandas as pd
 # import matplotlib.pyplot as plt
 import plotly.express as px
@@ -74,36 +76,61 @@ variable_indicators = ["Age group comparison", 'External source 1 comparison', "
 age_groups = pd.read_csv(filepath_age_groups)
 ### load ML model ###########################################
 ### App Layout ###############################################
-app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
+app.layout = html.Div(children=[
     html.H1(children='Interactive Client Application Reviewer', style={
         'textAlign': 'center',
-        'color': colors['text']
+        'color': colors['text'],
+        'font-family': "Arial",
     }),
-    dcc.Input(id='client_id', value='Client ID', type="number", min=2, max=1000000, style={
+    dcc.Input(id='client_id', placeholder="Client's ID", value='Client ID', type="number", min=2, max=1000000, style={
         'textAlign': 'left',
         'color': colors['background'],
+        'font-family': "Arial",
         'width': '22.5%',
-        'display': 'inline-block'
+        'display': 'inline-block',
+        'margin-bottom': '15px'
     }),
     html.Div(id='prediction_output', style={
         'textAlign': 'left',
-        'color': colors['text']
+        'color': colors['text'],
+        'font-family': "Arial",
+        'margin-bottom': '15px'
     }),
     dcc.Dropdown(
         id="variable_choice",
         options=[{"label": i, "value": i} for i in variable_indicators],
         placeholder="Select graph",
         style={'width': '48%',
-               'display': 'inline-block'}
+               'display': 'inline-block',
+               'font-family': "Arial"
+               }
     ),
     html.Div([
         dcc.Graph(id='graph_output')
-    ]),
-    html.Div(id='graph_output_explanation', style={
-        'textAlign': 'left',
-        'color': colors['text']
+    ], style={
+        'margin-bottom': '15px'
     }),
-])
+    html.Div(
+        [
+            html.Div(
+                [
+                    html.Div(id='graph_output_explanation', style={
+                        'color': colors['text'],
+                        'font-family': "Arial",
+                        'textAlign': 'center',
+                        'width': "100%"
+
+                    }
+                             )
+                ],
+                style={
+                    "width": '50%',
+                    "margin": "0 auto"
+                },
+            )
+        ], style={'width': '100%', })
+]
+)
 
 ### Callback to produce the prediction #########################
 """
@@ -190,18 +217,21 @@ def trace_graph(variable_choice, client_id):
 def update_output_EXT_SOURCE_1(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 1 is a credit score rating from other banking agencies." \
-                 "Client number: " + client_predictions["SK_ID_CURR"] + " placed" \
-                 + database.loc[client_id, "EXT_SOURCE_1"] + " on this metric." \
-                                                             " The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
-                                                             " Your score was {} away from the median of customers that serviced the debt obligations".format(
-            client_id,
-            round(stats.percentileofscore(
-                database["EXT_SOURCE_1"],
-                database.loc[client_id, "EXT_SOURCE_1"])),
-            round(abs(database.loc[
-                          database["TARGET_STR"] == "Repayed",
-                          "EXT_SOURCE_1"].median() -
-                      database.loc[client_id, "EXT_SOURCE_1"])), 2)
+                 " Client number: " + str(client_id) + " placed " \
+                 + str(database.loc[client_id, "EXT_SOURCE_1"]) + \
+                 " on this metric. \n" \
+                 " The higher your score on this metric the better." \
+                 " Client number {} placed on the {}th percentile." \
+                 " Your score was {} away from the median of customers" \
+                 " that serviced the debt obligations".format(
+                     client_id,
+                     round(stats.percentileofscore(
+                         database["EXT_SOURCE_1"],
+                         database.loc[client_id, "EXT_SOURCE_1"])),
+                     round(abs(database.loc[
+                                   database["TARGET_STR"] == "Repayed",
+                                   "EXT_SOURCE_1"].median() -
+                               database.loc[client_id, "EXT_SOURCE_1"])), 2)
     else:
         output = "Client's application is not in the database"
 
