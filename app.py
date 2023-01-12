@@ -40,19 +40,19 @@ database.loc[database["TARGET"] == 0.0, "TARGET_STR"] = "Repayed"
 
 
 def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
-    return (max_wanted - min_wanted) * (i - actual_min) / (actual_max - actual_min) + min_wanted
+    return (max_wanted - min_wanted) * (i - actual_max) / (actual_min - actual_max) + min_wanted
 
 
-database["DAYS_BIRTH"] = [rescaling(i, 20, 69, 0, 1) for i in
+database["DAYS_BIRTH"] = [rescaling(i, 20.09035, 68.98016, 0, 1) for i in
                           database["DAYS_BIRTH"]]  # scaling back from [0,1] to full range [20, 69]
 
-database["DAYS_EMPLOYED"] = [rescaling(i, 0, 49, 0, 1) for i in
+database["DAYS_EMPLOYED"] = [rescaling(i, 0.002737851, 47.81109, 0, 1) for i in
                              database["DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [0, 49]
 
-database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 4.050000e+06, 0, 1) for i in
+database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 2.245500e+06, 0, 1) for i in
                           database["AMT_CREDIT"]]  # scaling back from [0,1] to full range [20, 69]
 
-database["AMT_ANNUITY"] = [rescaling(i, 1615.500000, 258025.500000, 0, 1) for i in
+database["AMT_ANNUITY"] = [rescaling(i, 2295.000000, 180576.000000, 0, 1) for i in
                            database["AMT_ANNUITY"]]  # scaling back from [0,1] to full range [20, 69]
 
 # Variable names
@@ -319,11 +319,11 @@ def update_output_DAYS_EMPLOYED(client_id):
 
 def update_output_AMT_CREDIT(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        output = "Client number: " + str(client_id) + " asked for" \
+        output = "Client number: " + str(client_id) + " asked for " \
                  + str(database.loc[client_id, "AMT_CREDIT"]) + \
-                 " dollars of credit" \
+                 " dollars of credit. " \
                  " Client number {} placed on the {}th percentile. " \
-                 " The client asked for a credit amount {} away from the median of" \
+                 " The client asked for a credit amount {} away from the median of " \
                  " customers that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
