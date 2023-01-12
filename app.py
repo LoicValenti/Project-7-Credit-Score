@@ -43,16 +43,16 @@ def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
     return (max_wanted - min_wanted) * (i - actual_min) / (actual_max - actual_min) + min_wanted
 
 
-database["DAYS_BIRTH"] = [rescaling(i, 20, 69, 0.00001, 0.99999) for i in
+database["DAYS_BIRTH"] = [rescaling(i, 20, 69, 0, 1) for i in
                           database["DAYS_BIRTH"]]  # scaling back from [0,1] to full range [20, 69]
 
-database["DAYS_EMPLOYED"] = [rescaling(i, 0, 49, 0.00001, 0.99999) for i in
-                             database["DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [20, 69]
+database["DAYS_EMPLOYED"] = [rescaling(i, 0, 49, 0, 1) for i in
+                             database["DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [0, 49]
 
-database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 4.050000e+06, 0.00001, 0.99999) for i in
+database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 4.050000e+06, 0, 1) for i in
                           database["AMT_CREDIT"]]  # scaling back from [0,1] to full range [20, 69]
 
-database["AMT_ANNUITY"] = [rescaling(i, 1615.500000, 258025.500000, 0.00001, 0.99999) for i in
+database["AMT_ANNUITY"] = [rescaling(i, 1615.500000, 258025.500000, 0, 1) for i in
                            database["AMT_ANNUITY"]]  # scaling back from [0,1] to full range [20, 69]
 
 # Variable names
@@ -232,7 +232,7 @@ def update_output_EXT_SOURCE_1(client_id):
 def update_output_EXT_SOURCE_2(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 2 is a credit score rating from other banking agencies." \
-                 " Client number: " + str(client_id) + " placed" \
+                 " Client number: " + str(client_id) + " placed " \
                  + str(database.loc[client_id, "EXT_SOURCE_2"]) + \
                  " on this metric." \
                  " The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
@@ -253,7 +253,7 @@ def update_output_EXT_SOURCE_2(client_id):
 
 def update_output_CODE_GENDER(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        output = " Client number: " + str(client_id) + " is part of the group" \
+        output = " Client number: " + str(client_id) + " is part of the group " \
                  + str(database.loc[client_id, "CODE_GENDER"]) + \
                  " People amongst the gender group 0 have a much higher risk of defaulting than the gender group 1"
     else:
@@ -264,7 +264,7 @@ def update_output_CODE_GENDER(client_id):
 
 def update_output_FLAG_OWN_CAR(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        output = " Client number: " + str(client_id) + " is part of the group" \
+        output = " Client number: " + str(client_id) + " is part of the group " \
                  + str(database.loc[client_id, "FLAG_OWN_CAR"]) + \
                  " People amongst the group 0 have higher risk of defaulting than the group 1"
     else:
@@ -276,7 +276,7 @@ def update_output_FLAG_OWN_CAR(client_id):
 def update_output_DAYS_BIRTH(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's age is a strong factor for prediction of default." \
-                 " Client number: " + str(client_id) + " is" \
+                 " Client number: " + str(client_id) + " is " \
                  + str(database.loc[client_id, "DAYS_BIRTH"]) + \
                  " years old." \
                  " Client number {} placed on the {}th percentile. " \
@@ -298,7 +298,7 @@ def update_output_DAYS_BIRTH(client_id):
 def update_output_DAYS_EMPLOYED(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's number of years of employment is a strong factor for prediction of default." \
-                 " Client number: " + str(client_id) + " has" \
+                 " Client number: " + str(client_id) + " has " \
                  + str(database.loc[client_id, "DAYS_EMPLOYED"]) + \
                  " years of experience." \
                  " Client number {} placed on the {}th percentile. " \
@@ -521,7 +521,7 @@ def display_graph_DAYS_BIRTH(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "DAYS_BIRTH"]) * 100) / 100,
+            x=database.loc[client_id, "DAYS_BIRTH"],
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
