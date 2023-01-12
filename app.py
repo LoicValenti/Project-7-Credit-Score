@@ -1,7 +1,10 @@
 from turtle import width
 
 import pandas as pd
-# import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plti
+import matplotlib
+
+matplotlib.use('Agg')
 import plotly.express as px
 
 # import plotly.figure_factory as ff
