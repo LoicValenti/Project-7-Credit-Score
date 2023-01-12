@@ -7,4 +7,3 @@ pandas>=0.19
 plotly
 dash
 dash_bootstrap_components
-_tkinter
