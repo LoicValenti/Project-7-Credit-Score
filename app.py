@@ -1,28 +1,18 @@
-from turtle import width
-
 import pandas as pd
-# import matplotlib.pyplot as plt
-import matplotlib
 
-matplotlib.use('Agg')
 import plotly.express as px
 
-# import plotly.figure_factory as ff
-
-# import lime as lime
 filepath = "Credit Application Results.csv"
 client_predictions = pd.read_csv(filepath)
-# Dash_App.py
+
 ### Import Packages ########################################
 import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 
-# import dash_bootstrap_components as dbc
 import scipy.stats as stats
 
-# import pickle
 ### Setup ###################################################
 app = dash.Dash(__name__)
 app.title = 'Machine Learning Model Deployment'
