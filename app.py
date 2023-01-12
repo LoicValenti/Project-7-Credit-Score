@@ -1,7 +1,7 @@
 from turtle import width
 
 import pandas as pd
-# import matplotlib.pyplot as plti
+# import matplotlib.pyplot as plt
 import matplotlib
 
 matplotlib.use('Agg')
