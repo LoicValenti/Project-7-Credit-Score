@@ -15,6 +15,7 @@ Initialization
 """
 
 filepath = "Credit Application Results.csv"  # Prediction file, [Client_ID, Prediction probability]
+filepath_predict_probs = "Credit Application Predict Probabilities.csv"
 filepath_database = "Dataset_for_webapp.csv"  # Data file for the computations
 filepath_age_groups = "age_groups.csv"  # Data file for the age groups graph, could be optimized
 
@@ -38,7 +39,7 @@ def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
 
 
 def do_initialization_of_databases():
-    client_predictions = pd.read_csv(filepath)  # can be optimized, is there because of legacy reasons
+    client_predictions = pd.read_csv(filepath_predict_probs)  # can be optimized, is there because of legacy reasons
     target_encoded = pd.read_csv(filepath)
     client_info_database = pd.read_csv(filepath_database)
     client_info_database = client_info_database.set_index(client_info_database["SK_ID_CURR"]).drop(
@@ -156,10 +157,10 @@ def update_output(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
         if prediction > 0.5000000:
-            output = "Client's application was refused with {}% risk of defaulting".format(prediction * 100)
+            output = "Client's application was refused with {}% risk of defaulting".format(round(prediction * 100))
         else:
-            output = "Client's application was accepted with {}% chance of servicing the debt".format(
-                (1 - prediction) * 100)
+            output = "Client's application was accepted with {}% chance of servicing the debt".format(round(
+                (1 - prediction) * 100))
 
     else:
         output = "Client's application is not in the database"
@@ -220,7 +221,7 @@ def update_output_EXT_SOURCE_1(client_id):
                  " Client number: " + str(client_id) + " placed " \
                  + str(client_info_database.loc[client_id, "EXT_SOURCE_1"]) + \
                  " on this metric. \n" \
-                 " The higher your score on this metric the better." \
+                 " The higher the score on this metric the better." \
                  " Client number {} placed on the {}th percentile." \
                  " It is {} away from the median of customers" \
                  " that serviced the debt obligations".format(
@@ -244,8 +245,8 @@ def update_output_EXT_SOURCE_2(client_id):
                  " Client number: " + str(client_id) + " placed " \
                  + str(client_info_database.loc[client_id, "EXT_SOURCE_2"]) + \
                  " on this metric." \
-                 " The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
-                 " Your score was {} away from the median of customers that serviced the debt obligations".format(
+                 " The higher the score on this metric the better. Client number {} placed on the {}th percentile. " \
+                 " It is {} away from the median of customers that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
                          client_info_database["EXT_SOURCE_2"],
