@@ -1,59 +1,68 @@
-import pandas as pd
+"""
+First step : Imports
+"""
 
-import plotly.express as px
+import pandas as pd  # Data processing
+import plotly.express as px  # Visualization
+import dash  # Dashboard
+from dash import dcc  # Dashboard
+from dash import html  # Dashboard
+from dash.dependencies import Input, Output, State  # Callback functions for the dashboard
+import scipy.stats as stats  # Stats module
 
-filepath = "Credit Application Results.csv"
-client_predictions = pd.read_csv(filepath)
+"""
+Initialization
+"""
 
-### Import Packages ########################################
-import dash
-from dash import dcc
-from dash import html
-from dash.dependencies import Input, Output, State
+filepath = "Credit Application Results.csv"  # Prediction file, [Client_ID, Prediction probability]
+filepath_database = "Dataset_for_webapp.csv"  # Data file for the computations
+filepath_age_groups = "age_groups.csv"  # Data file for the age groups graph, could be optimized
 
-import scipy.stats as stats
+# Initialize the server app
 
-### Setup ###################################################
 app = dash.Dash(__name__)
 app.title = 'Machine Learning Model Deployment'
-
 server = app.server
+
+# Initialize the dashboard's colors
 
 colors = {
     'background': '#000000',
     'text': '#FFFBF6'
 }
-filepath_database = "Dataset_for_webapp.csv"
-
-filepath_age_groups = "age_groups.csv"
-filepath_target = "Credit Application Results.csv"
-target = pd.read_csv(filepath_target)
-database = pd.read_csv(filepath_database)
-target.loc[target["TARGET"] > 0.5, "TARGET"] = 1
-target.loc[target["TARGET"] <= 0.5, "TARGET"] = 0
-database["SK_ID_CURR"] = [i for i in target["SK_ID_CURR"]]
-database = database.set_index(database["SK_ID_CURR"]).drop(columns=["SK_ID_CURR"])
-database.insert(1, "TARGET", target["TARGET"])
-database["TARGET"] = [i for i in target["TARGET"]]
-database.loc[database["TARGET"] == 1.0, "TARGET_STR"] = "Defaulted"
-database.loc[database["TARGET"] == 0.0, "TARGET_STR"] = "Repayed"
 
 
+# Some utility functions
 def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
     return (max_wanted - min_wanted) * (i - actual_max) / (actual_min - actual_max) + min_wanted
 
 
-database["DAYS_BIRTH"] = [rescaling(i, 20.09035, 68.98016, 0, 1) for i in
-                          database["DAYS_BIRTH"]]  # scaling back from [0,1] to full range [20, 69]
+def do_initialization_of_databases():
+    client_predictions = pd.read_csv(filepath)  # can be optimized, is there because of legacy reasons
+    target_encoded = pd.read_csv(filepath)
+    client_info_database = pd.read_csv(filepath_database)
+    client_info_database = client_info_database.set_index(client_info_database["SK_ID_CURR"]).drop(
+        columns=["SK_ID_CURR"])
+    return client_predictions, target_encoded, client_info_database
 
-database["DAYS_EMPLOYED"] = [rescaling(i, 0.002737851, 47.81109, 0, 1) for i in
-                             database["DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [0, 49]
 
-database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 2.245500e+06, 0, 1) for i in
-                          database["AMT_CREDIT"]]  # scaling back from [0,1] to full range [20, 69]
+client_predictions, target_encoded, client_info_database = do_initialization_of_databases()
 
-database["AMT_ANNUITY"] = [rescaling(i, 2295.000000, 180576.000000, 0, 1) for i in
-                           database["AMT_ANNUITY"]]  # scaling back from [0,1] to full range [20, 69]
+client_info_database["DAYS_BIRTH"] = [rescaling(i, 20.09035, 68.98016, 0, 1) for i in
+                                      client_info_database[
+                                          "DAYS_BIRTH"]]  # scaling back from [0,1] to full range [20, 69]
+
+client_info_database["DAYS_EMPLOYED"] = [rescaling(i, 0.002737851, 47.81109, 0, 1) for i in
+                                         client_info_database[
+                                             "DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [0, 49]
+
+client_info_database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 2.245500e+06, 0, 1) for i in
+                                      client_info_database[
+                                          "AMT_CREDIT"]]  # scaling back from [0,1] to full range [20, 69]
+
+client_info_database["AMT_ANNUITY"] = [rescaling(i, 2295.000000, 180576.000000, 0, 1) for i in
+                                       client_info_database[
+                                           "AMT_ANNUITY"]]  # scaling back from [0,1] to full range [20, 69]
 
 # Variable names
 
@@ -209,7 +218,7 @@ def update_output_EXT_SOURCE_1(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 1 is a credit score rating from other banking agencies." \
                  " Client number: " + str(client_id) + " placed " \
-                 + str(database.loc[client_id, "EXT_SOURCE_1"]) + \
+                 + str(client_info_database.loc[client_id, "EXT_SOURCE_1"]) + \
                  " on this metric. \n" \
                  " The higher your score on this metric the better." \
                  " Client number {} placed on the {}th percentile." \
@@ -217,12 +226,12 @@ def update_output_EXT_SOURCE_1(client_id):
                  " that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
-                         database["EXT_SOURCE_1"],
-                         database.loc[client_id, "EXT_SOURCE_1"])),
-                     round(abs(database.loc[
-                                   database["TARGET_STR"] == "Repayed",
+                         client_info_database["EXT_SOURCE_1"],
+                         client_info_database.loc[client_id, "EXT_SOURCE_1"])),
+                     round(abs(client_info_database.loc[
+                                   client_info_database["TARGET_STR"] == "Repayed",
                                    "EXT_SOURCE_1"].median() -
-                               database.loc[client_id, "EXT_SOURCE_1"]), 3))
+                               client_info_database.loc[client_id, "EXT_SOURCE_1"]), 3))
     else:
         output = "Client's application is not in the database"
 
@@ -233,18 +242,18 @@ def update_output_EXT_SOURCE_2(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 2 is a credit score rating from other banking agencies." \
                  " Client number: " + str(client_id) + " placed " \
-                 + str(database.loc[client_id, "EXT_SOURCE_2"]) + \
+                 + str(client_info_database.loc[client_id, "EXT_SOURCE_2"]) + \
                  " on this metric." \
                  " The higher your score on this metric the better. Client number {} placed on the {}th percentile. " \
                  " Your score was {} away from the median of customers that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
-                         database["EXT_SOURCE_2"],
-                         database.loc[client_id, "EXT_SOURCE_2"])),
-                     round(abs(database.loc[
-                                   database["TARGET_STR"] == "Repayed",
+                         client_info_database["EXT_SOURCE_2"],
+                         client_info_database.loc[client_id, "EXT_SOURCE_2"])),
+                     round(abs(client_info_database.loc[
+                                   client_info_database["TARGET_STR"] == "Repayed",
                                    "EXT_SOURCE_2"].median() -
-                               database.loc[client_id, "EXT_SOURCE_2"]), 2))
+                               client_info_database.loc[client_id, "EXT_SOURCE_2"]), 2))
     else:
         output = "Client's application is not in the database"
 
@@ -254,8 +263,9 @@ def update_output_EXT_SOURCE_2(client_id):
 def update_output_CODE_GENDER(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = " Client number: " + str(client_id) + " is part of the group " \
-                 + str(database.loc[client_id, "CODE_GENDER"]) + \
-                 " People amongst the gender group 0 have a much higher risk of defaulting than the gender group 1"
+                 + str(client_info_database.loc[client_id, "CODE_GENDER_STR"]) + \
+                 ". People amongst the gender group male have a much higher risk of " \
+                 "defaulting than the gender group female"
     else:
         output = "Client's application is not in the database"
 
@@ -265,7 +275,7 @@ def update_output_CODE_GENDER(client_id):
 def update_output_FLAG_OWN_CAR(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = " Client number: " + str(client_id) + " is part of the group " \
-                 + str(database.loc[client_id, "FLAG_OWN_CAR"]) + \
+                 + str(client_info_database.loc[client_id, "FLAG_OWN_CAR"]) + \
                  " People amongst the group 0 have higher risk of defaulting than the group 1"
     else:
         output = "Client's application is not in the database"
@@ -277,18 +287,18 @@ def update_output_DAYS_BIRTH(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's age is a strong factor for prediction of default." \
                  " Client number: " + str(client_id) + " is " \
-                 + str(database.loc[client_id, "DAYS_BIRTH"]) + \
+                 + str(client_info_database.loc[client_id, "DAYS_BIRTH"]) + \
                  " years old." \
                  " Client number {} placed on the {}th percentile. " \
                  " The client is {} away from the median of customers that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
-                         database["DAYS_BIRTH"],
-                         database.loc[client_id, "DAYS_BIRTH"])),
-                     round(abs(database.loc[
-                                   database["TARGET_STR"] == "Repayed",
+                         client_info_database["DAYS_BIRTH"],
+                         client_info_database.loc[client_id, "DAYS_BIRTH"])),
+                     round(abs(client_info_database.loc[
+                                   client_info_database["TARGET_STR"] == "Repayed",
                                    "DAYS_BIRTH"].median() -
-                               database.loc[client_id, "DAYS_BIRTH"]), 2))
+                               client_info_database.loc[client_id, "DAYS_BIRTH"]), 2))
     else:
         output = "Client's application is not in the database"
 
@@ -299,18 +309,18 @@ def update_output_DAYS_EMPLOYED(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's number of years of employment is a strong factor for prediction of default." \
                  " Client number: " + str(client_id) + " has " \
-                 + str(database.loc[client_id, "DAYS_EMPLOYED"]) + \
+                 + str(client_info_database.loc[client_id, "DAYS_EMPLOYED"]) + \
                  " years of experience." \
                  " Client number {} placed on the {}th percentile. " \
                  " The client is {} away from the median of customers that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
-                         database["DAYS_EMPLOYED"],
-                         database.loc[client_id, "DAYS_EMPLOYED"])),
-                     round(abs(database.loc[
-                                   database["TARGET_STR"] == "Repayed",
+                         client_info_database["DAYS_EMPLOYED"],
+                         client_info_database.loc[client_id, "DAYS_EMPLOYED"])),
+                     round(abs(client_info_database.loc[
+                                   client_info_database["TARGET_STR"] == "Repayed",
                                    "DAYS_EMPLOYED"].median() -
-                               database.loc[client_id, "DAYS_EMPLOYED"]), 2))
+                               client_info_database.loc[client_id, "DAYS_EMPLOYED"]), 2))
     else:
         output = "Client's application is not in the database"
 
@@ -320,19 +330,19 @@ def update_output_DAYS_EMPLOYED(client_id):
 def update_output_AMT_CREDIT(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "Client number: " + str(client_id) + " asked for " \
-                 + str(database.loc[client_id, "AMT_CREDIT"]) + \
-                 " dollars of credit. " \
+                 + str(round(client_info_database.loc[client_id, "AMT_CREDIT"])) + \
+                 " dollars of credit. \n" \
                  " Client number {} placed on the {}th percentile. " \
                  " The client asked for a credit amount {} away from the median of " \
                  " customers that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
-                         database["AMT_CREDIT"],
-                         database.loc[client_id, "AMT_CREDIT"])),
-                     round(abs(database.loc[
-                                   database["TARGET_STR"] == "Repayed",
+                         client_info_database["AMT_CREDIT"],
+                         client_info_database.loc[client_id, "AMT_CREDIT"])),
+                     round(abs(client_info_database.loc[
+                                   client_info_database["TARGET_STR"] == "Repayed",
                                    "AMT_CREDIT"].median() -
-                               database.loc[client_id, "AMT_CREDIT"]), 2))
+                               client_info_database.loc[client_id, "AMT_CREDIT"]), 2))
     else:
         output = "Client's application is not in the database"
 
@@ -341,18 +351,20 @@ def update_output_AMT_CREDIT(client_id):
 
 def update_output_AMT_ANNUITY(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        output = "The amount of the annuity." + str(database.loc[client_id, "AMT_ANNUITY"]) + \
-                 " Client number {} placed on the {}th percentile. " \
-                 " The client's annuity are {} away from the median of" \
-                 " customers that serviced the debt obligations".format(
-                     client_id,
-                     round(stats.percentileofscore(
-                         database["AMT_ANNUITY"],
-                         database.loc[client_id, "AMT_ANNUITY"])),
-                     round(abs(database.loc[
-                                   database["TARGET_STR"] == "Repayed",
-                                   "AMT_ANNUITY"].median() -
-                               database.loc[client_id, "AMT_ANNUITY"]), 2))
+        output = "Client number: " + str(client_id) + " would have " \
+                 + str(round(client_info_database.loc[client_id, "AMT_ANNUITY"])) + \
+                 " dollars of annuity. " + + \
+                     " Client number {} placed on the {}th percentile. " \
+                     " The client's annuity are {} away from the median of" \
+                     " customers that serviced the debt obligations".format(
+                         client_id,
+                         round(stats.percentileofscore(
+                             client_info_database["AMT_ANNUITY"],
+                             client_info_database.loc[client_id, "AMT_ANNUITY"])),
+                         round(abs(client_info_database.loc[
+                                       client_info_database["TARGET_STR"] == "Repayed",
+                                       "AMT_ANNUITY"].median() -
+                                   client_info_database.loc[client_id, "AMT_ANNUITY"]), 2))
     else:
         output = "Client's application is not in the database"
 
@@ -378,7 +390,7 @@ def show_client_position_age_group_graph(client_id):
     )
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round(database.loc[client_id, "DAYS_BIRTH"]) % 10,
+            x=round(client_info_database.loc[client_id, "DAYS_BIRTH"]) % 10,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -387,14 +399,14 @@ def show_client_position_age_group_graph(client_id):
 
 def display_graph_EXT_SOURCE_1(client_id):
     fig = px.histogram(
-        database, x="EXT_SOURCE_1",
+        client_info_database, x="EXT_SOURCE_1",
         range_x=[0, 1],
         barmode="relative",
         marginal="box",
         color="TARGET_STR",
         log_y=True,
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
-        hover_data=database.columns,
+        hover_data=client_info_database.columns,
         title="External credit rating 1 for client %s" % client_id,
         labels={
             "x": "External Credit Rating 1",
@@ -407,7 +419,7 @@ def display_graph_EXT_SOURCE_1(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -417,7 +429,7 @@ def display_graph_EXT_SOURCE_1(client_id):
 
 def display_graph_EXT_SOURCE_2(client_id):
     fig = px.histogram(
-        database, x="EXT_SOURCE_2",
+        client_info_database, x="EXT_SOURCE_2",
         range_x=[0, 1],
         nbins=50,
         barmode="relative",
@@ -425,7 +437,7 @@ def display_graph_EXT_SOURCE_2(client_id):
         color="TARGET_STR",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
         log_y=True,
-        hover_data=database.columns,
+        hover_data=client_info_database.columns,
         title="External credit rating 2 for client %s" % client_id,
         labels={
             "x": "External Credit Rating 2",
@@ -438,7 +450,7 @@ def display_graph_EXT_SOURCE_2(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "EXT_SOURCE_2"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "EXT_SOURCE_2"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -448,8 +460,8 @@ def display_graph_EXT_SOURCE_2(client_id):
 
 def display_graph_CODE_GENDER(client_id):
     fig = px.histogram(
-        database,
-        x="CODE_GENDER",
+        client_info_database,
+        x="CODE_GENDER_STR",
         color="TARGET_STR",
         barmode="group",
         color_discrete_sequence=px.colors.qualitative.Alphabet_r,
@@ -465,7 +477,7 @@ def display_graph_CODE_GENDER(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "CODE_GENDER"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="blue")
         return fig
@@ -475,7 +487,7 @@ def display_graph_CODE_GENDER(client_id):
 
 def display_graph_FLAG_OWN_CAR(client_id):
     fig = px.histogram(
-        database,
+        client_info_database,
         x="FLAG_OWN_CAR",
         color="TARGET_STR",
         barmode="group",
@@ -493,7 +505,7 @@ def display_graph_FLAG_OWN_CAR(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "FLAG_OWN_CAR"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "FLAG_OWN_CAR"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="blue")
         return fig
@@ -503,7 +515,7 @@ def display_graph_FLAG_OWN_CAR(client_id):
 
 def display_graph_DAYS_BIRTH(client_id):
     fig = px.histogram(
-        database,
+        client_info_database,
         x="DAYS_BIRTH",
         color="TARGET_STR",
         marginal="box",
@@ -521,7 +533,7 @@ def display_graph_DAYS_BIRTH(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=database.loc[client_id, "DAYS_BIRTH"],
+            x=client_info_database.loc[client_id, "DAYS_BIRTH"],
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -531,7 +543,7 @@ def display_graph_DAYS_BIRTH(client_id):
 
 def display_graph_DAYS_EMPLOYED(client_id):
     fig = px.histogram(
-        database,
+        client_info_database,
         x="DAYS_EMPLOYED",
         color="TARGET_STR",
         barmode="relative",
@@ -550,7 +562,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "DAYS_EMPLOYED"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "DAYS_EMPLOYED"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -560,7 +572,7 @@ def display_graph_DAYS_EMPLOYED(client_id):
 
 def display_graph_AMT_CREDIT(client_id):
     fig = px.histogram(
-        database,
+        client_info_database,
         x="AMT_CREDIT",
         color="TARGET_STR",
         log_y=True,
@@ -579,7 +591,7 @@ def display_graph_AMT_CREDIT(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "AMT_CREDIT"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "AMT_CREDIT"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -589,7 +601,7 @@ def display_graph_AMT_CREDIT(client_id):
 
 def display_graph_AMT_ANNUITY(client_id):
     fig = px.histogram(
-        database,
+        client_info_database,
         x="AMT_ANNUITY",
         color="TARGET_STR",
         marginal="box",
@@ -607,7 +619,7 @@ def display_graph_AMT_ANNUITY(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((database.loc[client_id, "AMT_ANNUITY"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "AMT_ANNUITY"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
