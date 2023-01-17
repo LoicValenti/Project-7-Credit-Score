@@ -65,15 +65,18 @@ client_info_database["AMT_ANNUITY"] = [rescaling(i, 2295.000000, 180576.000000, 
                                        client_info_database[
                                            "AMT_ANNUITY"]]  # scaling back from [0,1] to full range [20, 69]
 
-# Variable names
+# Variable names for the dropdown list
 
 variable_indicators = ["Age group comparison", 'External source 1 comparison', "External source 2 comparison",
                        "Duration of employment comparison", "Age group detailed comparison", "Car ownership comparison",
                        "Credit amount comparison", "Credit annuity comparison", "Gender distribution comparison"]
 
 age_groups = pd.read_csv(filepath_age_groups)
-### load ML model ###########################################
-### App Layout ###############################################
+
+"""
+HTML layout of the dashboard
+"""
+
 app.layout = html.Div(children=[
     html.H1(children='Interactive Client Application Reviewer', style={
         'textAlign': 'center',
@@ -90,6 +93,13 @@ app.layout = html.Div(children=[
         'margin-bottom': '15px'
     }),
     html.Div(id='prediction_output', style={
+        'textAlign': 'left',
+        'color': colors['text'],
+        'font-family': "Arial",
+        'font-size': "20px",
+        'margin-bottom': '15px'
+    }),
+    html.Div(id='prediction_output_personal_information', style={
         'textAlign': 'left',
         'color': colors['text'],
         'font-family': "Arial",
@@ -162,6 +172,23 @@ def update_output(client_id):
             output = "Client's application was accepted with {}% chance of servicing the debt".format(round(
                 (1 - prediction) * 100))
 
+    else:
+        output = "Client's application is not in the database"
+
+    return f'{output}.'
+
+
+@app.callback(
+    Output('prediction_output_personal_information', 'children'),
+    Input('client_id', 'value'))
+def update_output(client_id):
+    if client_id in client_predictions["SK_ID_CURR"].values:
+        output = "Client number " + str(client_id) + \
+                 " is " + str(round(client_info_database.loc[client_id, "DAYS_BIRTH"])) + \
+                 " years old, has " + str(round(client_info_database.loc[client_id, "CNT_CHILDREN"])) + \
+                 " children, has been employed " + str(round(client_info_database.loc[client_id, "DAYS_EMPLOYED"])) + \
+                 " years, and earns " + str(
+            round(client_info_database.loc[client_id, "AMT_INCOME_TOTAL"])) + " dollars"
     else:
         output = "Client's application is not in the database"
 
@@ -354,18 +381,18 @@ def update_output_AMT_ANNUITY(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "Client number: " + str(client_id) + " would have " \
                  + str(round(client_info_database.loc[client_id, "AMT_ANNUITY"])) + \
-                 " dollars of annuity. " + + \
-                     " Client number {} placed on the {}th percentile. " \
-                     " The client's annuity are {} away from the median of" \
-                     " customers that serviced the debt obligations".format(
-                         client_id,
-                         round(stats.percentileofscore(
-                             client_info_database["AMT_ANNUITY"],
-                             client_info_database.loc[client_id, "AMT_ANNUITY"])),
-                         round(abs(client_info_database.loc[
-                                       client_info_database["TARGET_STR"] == "Repayed",
-                                       "AMT_ANNUITY"].median() -
-                                   client_info_database.loc[client_id, "AMT_ANNUITY"]), 2))
+                 " dollars of annuity. " + \
+                 " Client number {} placed on the {}th percentile. " \
+                 " The client's annuity are {} away from the median of" \
+                 " customers that serviced the debt obligations".format(
+                     client_id,
+                     round(stats.percentileofscore(
+                         client_info_database["AMT_ANNUITY"],
+                         client_info_database.loc[client_id, "AMT_ANNUITY"])),
+                     round(abs(client_info_database.loc[
+                                   client_info_database["TARGET_STR"] == "Repayed",
+                                   "AMT_ANNUITY"].median() -
+                               client_info_database.loc[client_id, "AMT_ANNUITY"]), 2))
     else:
         output = "Client's application is not in the database"
 
