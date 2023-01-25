@@ -35,10 +35,26 @@ colors = {
 
 # Some utility functions
 def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
+    """
+    Rescales the data from the given min and max to the given values
+    To be used in a list creation function
+
+    """
     return (max_wanted - min_wanted) * (i - actual_max) / (actual_min - actual_max) + min_wanted
 
 
 def do_initialization_of_databases():
+    """
+    Initialize the databases used by the application.
+
+    Parameters :
+    None
+    Returns :
+    client_predictions : pandas dataframe containing the prediction probabilities
+    target_encoded : pandas dataframe containing the encoded target to 0 or 1
+    client_info_database : pandas dataframe containing the client information
+
+    """
     client_predictions = pd.read_csv(filepath_predict_probs)  # can be optimized, is there because of legacy reasons
     target_encoded = pd.read_csv(filepath)
     client_info_database = pd.read_csv(filepath_database)
@@ -49,27 +65,33 @@ def do_initialization_of_databases():
 
 client_predictions, target_encoded, client_info_database = do_initialization_of_databases()
 
+# Rescaling of the database from [0,1] from the training to the actual min and max
+
 client_info_database["DAYS_BIRTH"] = [rescaling(i, 20.09035, 68.98016, 0, 1) for i in
                                       client_info_database[
                                           "DAYS_BIRTH"]]  # scaling back from [0,1] to full range [20, 69]
 
 client_info_database["DAYS_EMPLOYED"] = [rescaling(i, 0.002737851, 47.81109, 0, 1) for i in
                                          client_info_database[
-                                             "DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [0, 49]
+                                             "DAYS_EMPLOYED"]]  # scaling back from [0,1] to full range [0, 47]
 
 client_info_database["AMT_CREDIT"] = [rescaling(i, 4.500000e+04, 2.245500e+06, 0, 1) for i in
                                       client_info_database[
-                                          "AMT_CREDIT"]]  # scaling back from [0,1] to full range [20, 69]
+                                          "AMT_CREDIT"]]  # scaling back from [0,1]
+# to full range [4.500000e+04, 2.245500e+06]
 
-client_info_database["AMT_ANNUITY"] = [rescaling(i, 2295.000000, 180576.000000, 0, 1) for i in
+client_info_database["AMT_ANNUITY"] = [rescaling(i, 2295.0, 180576.0, 0, 1) for i in
                                        client_info_database[
-                                           "AMT_ANNUITY"]]  # scaling back from [0,1] to full range [20, 69]
+                                           "AMT_ANNUITY"]]  # scaling back from [0,1] to full range [2295, 180576]
 
 # Variable names for the dropdown list
 
 variable_indicators = ["Age group comparison", 'External source 1 comparison', "External source 2 comparison",
                        "Duration of employment comparison", "Age group detailed comparison", "Car ownership comparison",
                        "Credit amount comparison", "Credit annuity comparison", "Gender distribution comparison"]
+
+# age_groups is a special case dataframe to plot the first graphs that appears on the dashboard as a bandaid fix
+# for a bug in printing the graph correctly
 
 age_groups = pd.read_csv(filepath_age_groups)
 
@@ -143,30 +165,26 @@ app.layout = html.Div(children=[
 ]
 )
 
-### Callback to produce the prediction #########################
-"""
-@app.callback(
-    Output("prediction_graph", "children"),
-    Input('client_id', 'value')
-)
-def prediction_visualisation(client_id):
-    return 
-"""
 
-"""
-html.Div([
-    dcc.Graph(id='graph_output')
-]),
-"""
-
+# Callback to produce the prediction #########################
 
 @app.callback(
     Output('prediction_output', 'children'),
     Input('client_id', 'value'))
 def update_output(client_id):
+    """
+    Update the output for the client's prediction
+
+    Parameters:
+        Client_id (int): Client identifier in the database
+
+    Returns:
+        output (string): Model prediction for the client
+    """
+
     if client_id in client_predictions["SK_ID_CURR"].values:
         prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:
+        if prediction > 0.5000000:  # Legacy function needs to be updated to reduce memory usage
             output = "Client's application was refused with {}% risk of defaulting".format(round(prediction * 100))
         else:
             output = "Client's application was accepted with {}% chance of servicing the debt".format(round(
@@ -182,6 +200,15 @@ def update_output(client_id):
     Output('prediction_output_personal_information', 'children'),
     Input('client_id', 'value'))
 def update_output(client_id):
+    """
+    Update the output for the client's profile
+
+    Parameters:
+        Client_id (int): Client identifier in the database
+
+    Returns:
+        output (string): Profile sentence for the client
+    """
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "Client number " + str(client_id) + \
                  " is " + str(round(client_info_database.loc[client_id, "DAYS_BIRTH"])) + \
@@ -189,10 +216,9 @@ def update_output(client_id):
                  " children, has been employed " + str(round(client_info_database.loc[client_id, "DAYS_EMPLOYED"])) + \
                  " years, and earns " + str(
             round(client_info_database.loc[client_id, "AMT_INCOME_TOTAL"])) + " dollars"
-    else:
-        output = "Client's application is not in the database"
 
-    return f'{output}.'
+        return f'{output}.'
+    return ''
 
 
 # Skeleton for the new graphing function
@@ -203,7 +229,23 @@ def update_output(client_id):
      Input("client_id", "value")]
 )
 def trace_graph(variable_choice, client_id):
-    if client_id in client_predictions["SK_ID_CURR"].values:
+    """
+    Main graph function.
+
+    Gives the html the appropriate graph from the dropdown list.
+    Also feeds the corresponding explanation.
+
+    Parameters:
+        client_id (int): Client identifier in the database
+        variable_choice (str): graph chose from the dropdown list
+
+    Returns:
+        graph_output (px object): graph output from the dropdown list
+        graph_output_explanation (string): graph output explanation
+    """
+
+    if client_id in client_predictions["SK_ID_CURR"].values:  # No need to go through all the if statements as
+        # they contain a return statement. It could be improved with a refactoring of the function's name
         if variable_choice == 'External source 1 comparison':
             return display_graph_EXT_SOURCE_1(client_id), update_output_EXT_SOURCE_1(client_id)
         if variable_choice == 'External source 2 comparison':
@@ -242,6 +284,7 @@ def trace_graph(variable_choice, client_id):
     return fig, "Enter the necessary information above"
 
 
+# all the other functions are utility functions to graph the appropriate figure for the main "trace_graph" function
 def update_output_EXT_SOURCE_1(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 1 is a credit score rating from other banking agencies." \
@@ -337,7 +380,7 @@ def update_output_DAYS_EMPLOYED(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's number of years of employment is a strong factor for prediction of default." \
                  " Client number: " + str(client_id) + " has " \
-                 + str(client_info_database.loc[client_id, "DAYS_EMPLOYED"]) + \
+                 + str(round(client_info_database.loc[client_id, "DAYS_EMPLOYED"])) + \
                  " years of experience." \
                  " Client number {} placed on the {}th percentile. " \
                  " The client is {} away from the median of customers that serviced the debt obligations".format(
@@ -418,7 +461,7 @@ def show_client_position_age_group_graph(client_id):
     )
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round(client_info_database.loc[client_id, "DAYS_BIRTH"]) % 10,
+            x=round(client_info_database.loc[client_id, "DAYS_BIRTH"] / 10),
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
@@ -655,6 +698,6 @@ def display_graph_AMT_ANNUITY(client_id):
     return fig
 
 
-### Run the App ###############################################
+# Run the App ###############################################
 if __name__ == '__main__':
     app.run_server(debug=True)
