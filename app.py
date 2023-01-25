@@ -459,12 +459,14 @@ def show_client_position_age_group_graph(client_id):
         paper_bgcolor=colors['background'],
         font_color=colors['text']
     )
+    """
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
             x=round(client_info_database.loc[client_id, "DAYS_BIRTH"] / 10) + 1,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
+    """
     return fig
 
 
