@@ -285,6 +285,7 @@ def trace_graph(variable_choice, client_id):
 
 
 # all the other functions are utility functions to graph the appropriate figure for the main "trace_graph" function
+# plotly.express is used to create the reactive graphs and are included in the dash ecosystem.
 def update_output_EXT_SOURCE_1(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 1 is a credit score rating from other banking agencies." \
