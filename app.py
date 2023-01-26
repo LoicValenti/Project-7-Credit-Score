@@ -86,7 +86,7 @@ client_info_database["AMT_ANNUITY"] = [rescaling(i, 2295.0, 180576.0, 0, 1) for 
 
 # Variable names for the dropdown list
 
-variable_indicators = ["Age group comparison", 'External source 1 comparison', "External source 2 comparison",
+variable_indicators = ["Age group comparison", 'External source 3 comparison', "External source 2 comparison",
                        "Duration of employment comparison", "Age group detailed comparison", "Car ownership comparison",
                        "Credit amount comparison", "Credit annuity comparison", "Gender distribution comparison"]
 
@@ -247,7 +247,7 @@ def trace_graph(variable_choice, client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:  # No need to go through all the if statements as
         # they contain a return statement. It could be improved with a refactoring of the function's name
         if variable_choice == 'External source 1 comparison':
-            return display_graph_EXT_SOURCE_1(client_id), update_output_EXT_SOURCE_1(client_id)
+            return display_graph_EXT_SOURCE_3(client_id), update_output_EXT_SOURCE_3(client_id)
         if variable_choice == 'External source 2 comparison':
             return display_graph_EXT_SOURCE_2(client_id), update_output_EXT_SOURCE_2(client_id)
         if variable_choice == 'Gender distribution comparison':
@@ -286,11 +286,11 @@ def trace_graph(variable_choice, client_id):
 
 # all the other functions are utility functions to graph the appropriate figure for the main "trace_graph" function
 # plotly.express is used to create the reactive graphs and are included in the dash ecosystem.
-def update_output_EXT_SOURCE_1(client_id):
+def update_output_EXT_SOURCE_3(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
-        output = "External Source 1 is a credit score rating from other banking agencies." \
+        output = "External Source 3 is a credit score rating from other banking agencies." \
                  " Client number: " + str(client_id) + " placed " \
-                 + str(client_info_database.loc[client_id, "EXT_SOURCE_1"]) + \
+                 + str(client_info_database.loc[client_id, "EXT_SOURCE_3"]) + \
                  " on this metric. \n" \
                  " The higher the score on this metric the better." \
                  " Client number {} placed on the {}th percentile." \
@@ -298,12 +298,12 @@ def update_output_EXT_SOURCE_1(client_id):
                  " that serviced the debt obligations".format(
                      client_id,
                      round(stats.percentileofscore(
-                         client_info_database["EXT_SOURCE_1"],
-                         client_info_database.loc[client_id, "EXT_SOURCE_1"])),
+                         client_info_database["EXT_SOURCE_3"],
+                         client_info_database.loc[client_id, "EXT_SOURCE_3"])),
                      round(abs(client_info_database.loc[
                                    client_info_database["TARGET_STR"] == "Repayed",
-                                   "EXT_SOURCE_1"].median() -
-                               client_info_database.loc[client_id, "EXT_SOURCE_1"]), 3))
+                                   "EXT_SOURCE_3"].median() -
+                               client_info_database.loc[client_id, "EXT_SOURCE_3"]), 3))
     else:
         output = "Client's application is not in the database"
 
@@ -471,9 +471,9 @@ def show_client_position_age_group_graph(client_id):
     return fig
 
 
-def display_graph_EXT_SOURCE_1(client_id):
+def display_graph_EXT_SOURCE_3(client_id):
     fig = px.histogram(
-        client_info_database, x="EXT_SOURCE_1",
+        client_info_database, x="EXT_SOURCE_3",
         range_x=[0, 1],
         barmode="relative",
         marginal="box",
@@ -493,7 +493,7 @@ def display_graph_EXT_SOURCE_1(client_id):
         font_color=colors['text'])
     if client_id in client_predictions["SK_ID_CURR"].values:
         fig.add_vline(
-            x=round((client_info_database.loc[client_id, "EXT_SOURCE_1"]) * 100) / 100,
+            x=round((client_info_database.loc[client_id, "EXT_SOURCE_3"]) * 100) / 100,
             line_width=3, line_dash="dash",
             line_color="cyan")
         return fig
