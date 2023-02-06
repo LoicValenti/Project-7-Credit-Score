@@ -246,7 +246,7 @@ def trace_graph(variable_choice, client_id):
 
     if client_id in client_predictions["SK_ID_CURR"].values:  # No need to go through all the if statements as
         # they contain a return statement. It could be improved with a refactoring of the function's name
-        if variable_choice == 'External source 1 comparison':
+        if variable_choice == 'External source 3 comparison':
             return display_graph_EXT_SOURCE_3(client_id), update_output_EXT_SOURCE_3(client_id)
         if variable_choice == 'External source 2 comparison':
             return display_graph_EXT_SOURCE_2(client_id), update_output_EXT_SOURCE_2(client_id)
