@@ -215,7 +215,7 @@ def update_output(client_id):
                  " years old, has " + str(round(client_info_database.loc[client_id, "CNT_CHILDREN"])) + \
                  " children, has been employed " + str(round(client_info_database.loc[client_id, "DAYS_EMPLOYED"])) + \
                  " years, and earns " + str(
-            round(client_info_database.loc[client_id, "AMT_INCOME_TOTAL"])) + " dollars"
+            round(client_info_database.loc[client_id, "AMT_INCOME_TOTAL"]))
 
         return f'{output}.'
     return ''
