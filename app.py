@@ -359,7 +359,7 @@ def update_output_DAYS_BIRTH(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "The client's age is a strong factor for prediction of default." \
                  " Client number: " + str(client_id) + " is " \
-                 + str(client_info_database.loc[client_id, "DAYS_BIRTH"]) + \
+                 + str(round(client_info_database.loc[client_id, "DAYS_BIRTH"])) + \
                  " years old." \
                  " Client number {} placed on the {}th percentile. " \
                  " The client is {} away from the median of customers that serviced the debt obligations".format(
@@ -403,7 +403,7 @@ def update_output_AMT_CREDIT(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "Client number: " + str(client_id) + " asked for " \
                  + str(round(client_info_database.loc[client_id, "AMT_CREDIT"])) + \
-                 " dollars of credit. \n" \
+                 " of credit. \n" \
                  " Client number {} placed on the {}th percentile. " \
                  " The client asked for a credit amount {} away from the median of " \
                  " customers that serviced the debt obligations".format(
@@ -425,7 +425,7 @@ def update_output_AMT_ANNUITY(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "Client number: " + str(client_id) + " would have " \
                  + str(round(client_info_database.loc[client_id, "AMT_ANNUITY"])) + \
-                 " dollars of annuity. " + \
+                 " of annuity. " + \
                  " Client number {} placed on the {}th percentile. " \
                  " The client's annuity are {} away from the median of" \
                  " customers that serviced the debt obligations".format(
