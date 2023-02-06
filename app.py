@@ -290,7 +290,7 @@ def update_output_EXT_SOURCE_3(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 3 is a credit score rating from other banking agencies." \
                  " Client number: " + str(client_id) + " placed " \
-                 + str(round(client_info_database.loc[client_id, "EXT_SOURCE_3"])) + \
+                 + str(round(client_info_database.loc[client_id, "EXT_SOURCE_3"], 3)) + \
                  " on this metric. \n" \
                  " The higher the score on this metric the better." \
                  " Client number {} placed on the {}th percentile." \
@@ -314,7 +314,7 @@ def update_output_EXT_SOURCE_2(client_id):
     if client_id in client_predictions["SK_ID_CURR"].values:
         output = "External Source 2 is a credit score rating from other banking agencies." \
                  " Client number: " + str(client_id) + " placed " \
-                 + str(round(client_info_database.loc[client_id, "EXT_SOURCE_2"])) + \
+                 + str(round(client_info_database.loc[client_id, "EXT_SOURCE_2"], 3)) + \
                  " on this metric." \
                  " The higher the score on this metric the better. Client number {} placed on the {}th percentile. " \
                  " It is {} away from the median of customers that serviced the debt obligations".format(
