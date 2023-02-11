@@ -1,6 +1,16 @@
 # Project-7-Credit-Score
 Credit score project with an emphasis on transparency and ease of use.
 
-This is a work in progress.
 
-The current focus is on the analysis and the model building.
+## Data used to creat the dashboard
+Credit Application Predict Probabilities.csv
+
+Credit Application Results.csv
+
+Dataset_for_webapp.csv
+
+labels.csv
+
+## Code to generate the dashboard and the API 
+
+app.py
