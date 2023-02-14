@@ -9,6 +9,7 @@ from dash import dcc  # Dashboard
 from dash import html  # Dashboard
 from dash.dependencies import Input, Output, State  # Callback functions for the dashboard
 import scipy.stats as stats  # Stats module
+import request  # Calling the API
 
 """
 Initialization
@@ -165,6 +166,16 @@ app.layout = html.Div(children=[
 ]
 )
 
+import requests
+
+url = "https://random-facts2.p.rapidapi.com/getfact"
+headers = {
+    'x-rapidapi-host': "random-facts2.p.rapidapi.com",
+    'x-rapidapi-key': "YOUR-RAPIDAPI-HUB-Key"
+}
+response = requests.request("GET", url, headers=headers)
+print(response.text)
+
 
 # Callback to produce the prediction #########################
 
@@ -183,6 +194,8 @@ def update_output(client_id):
     """
 
     if client_id in client_predictions["SK_ID_CURR"].values:
+
+        # Insert the api request here
         prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
         if prediction > 0.5000000:  # Legacy function needs to be updated to reduce memory usage
             output = "Client's application was refused with {}% risk of defaulting".format(round(prediction * 100))
