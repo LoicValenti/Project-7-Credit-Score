@@ -11,6 +11,6 @@ Dataset_for_webapp.csv
 
 labels.csv
 
-## Code to generate the dashboard and the API 
+## Code to generate the API 
 
-app.py
+API.py
