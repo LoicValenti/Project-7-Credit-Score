@@ -176,7 +176,7 @@ app.layout = html.Div(children=[
     Input('client_id', 'value'))
 def update_output(client_id):
     """
-    Update the output for the client's prediction
+    Update the output for the client's prediction using the API hosted on HEROKU
     """
     url = "https://projet-7-credit-score-api.herokuapp.com/prediction/{}".format(client_id)
     output = requests.request("GET", url)
