@@ -12,7 +12,6 @@ def rescaling(i, min_wanted, max_wanted, actual_min, actual_max):
     return (max_wanted - min_wanted) * (i - actual_max) / (actual_min - actual_max) + min_wanted
 
 
-filepath = "Credit Application Results.csv"  # Prediction file, [Client_ID, Prediction probability]
 filepath_predict_probs = "Credit Application Predict Probabilities.csv"
 
 client_predictions = pd.read_csv(filepath_predict_probs)
