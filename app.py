@@ -25,7 +25,7 @@ filepath_age_groups = "age_groups.csv"  # Data file for the age groups graph, co
 
 app = dash.Dash(__name__)
 app.title = 'Machine Learning Model Deployment'
-# server = app.server
+server = app.server
 
 # Initialize the dashboard's colors
 
