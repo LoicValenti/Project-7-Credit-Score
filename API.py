@@ -21,7 +21,7 @@ app = FastAPI()
 
 
 @app.get("/prediction/{client_id}")
-async def root(client_id):
+async def root(client_id: int):
     client_id = int(client_id)
     if client_id in client_predictions["SK_ID_CURR"].values:
 
@@ -32,8 +32,7 @@ async def root(client_id):
         else:
             output = "Client's application was accepted with {}% chance of servicing the debt".format(round(
                 (1 - prediction) * 100))
-
     else:
-        output = "Client's application is not in the database"
+        output = "Enter a valid client number in the space above"
 
     return {"message": output}

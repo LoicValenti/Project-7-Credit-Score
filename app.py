@@ -9,7 +9,8 @@ from dash import dcc  # Dashboard
 from dash import html  # Dashboard
 from dash.dependencies import Input, Output, State  # Callback functions for the dashboard
 import scipy.stats as stats  # Stats module
-import request  # Calling the API
+import requests  # Calling the API
+import json  # formating api get in json
 
 """
 Initialization
@@ -106,15 +107,16 @@ app.layout = html.Div(children=[
         'color': colors['text'],
         'font-family': "Arial"
     }),
-    dcc.Input(id='client_id', placeholder="Client's ID", value='Client ID', type="number", min=2, max=1000000, style={
-        'textAlign': 'left',
-        'color': colors['background'],
-        'font-family': "Arial",
-        'width': '22.5%',
-        'height': '27px',
-        'display': 'inline-block',
-        'margin-bottom': '15px'
-    }),
+    dcc.Input(id='client_id', placeholder="Client's ID", value='1', type="number", min=1, max=1000000,
+              style={
+                  'textAlign': 'left',
+                  'color': colors['background'],
+                  'font-family': "Arial",
+                  'width': '22.5%',
+                  'height': '27px',
+                  'display': 'inline-block',
+                  'margin-bottom': '15px'
+              }),
     html.Div(id='prediction_output', style={
         'textAlign': 'left',
         'color': colors['text'],
@@ -166,8 +168,7 @@ app.layout = html.Div(children=[
 ]
 )
 
-import requests
-
+"""
 url = "https://random-facts2.p.rapidapi.com/getfact"
 headers = {
     'x-rapidapi-host': "random-facts2.p.rapidapi.com",
@@ -175,6 +176,7 @@ headers = {
 }
 response = requests.request("GET", url, headers=headers)
 print(response.text)
+"""
 
 
 # Callback to produce the prediction #########################
@@ -192,7 +194,7 @@ def update_output(client_id):
     Returns:
         output (string): Model prediction for the client
     """
-
+    """
     if client_id in client_predictions["SK_ID_CURR"].values:
 
         # Insert the api request here
@@ -205,8 +207,11 @@ def update_output(client_id):
 
     else:
         output = "Client's application is not in the database"
-
-    return f'{output}.'
+        
+    """
+    url = "http://127.0.0.1:8000/prediction/{}".format(client_id)
+    output = requests.request("GET", url)
+    return f'{json.loads(output.text)["message"]}.'
 
 
 @app.callback(
