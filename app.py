@@ -168,16 +168,6 @@ app.layout = html.Div(children=[
 ]
 )
 
-"""
-url = "https://random-facts2.p.rapidapi.com/getfact"
-headers = {
-    'x-rapidapi-host': "random-facts2.p.rapidapi.com",
-    'x-rapidapi-key': "YOUR-RAPIDAPI-HUB-Key"
-}
-response = requests.request("GET", url, headers=headers)
-print(response.text)
-"""
-
 
 # Callback to produce the prediction #########################
 
@@ -187,27 +177,6 @@ print(response.text)
 def update_output(client_id):
     """
     Update the output for the client's prediction
-
-    Parameters:
-        Client_id (int): Client identifier in the database
-
-    Returns:
-        output (string): Model prediction for the client
-    """
-    """
-    if client_id in client_predictions["SK_ID_CURR"].values:
-
-        # Insert the api request here
-        prediction = client_predictions.loc[client_predictions["SK_ID_CURR"] == client_id].iloc[-1, 1]
-        if prediction > 0.5000000:  # Legacy function needs to be updated to reduce memory usage
-            output = "Client's application was refused with {}% risk of defaulting".format(round(prediction * 100))
-        else:
-            output = "Client's application was accepted with {}% chance of servicing the debt".format(round(
-                (1 - prediction) * 100))
-
-    else:
-        output = "Client's application is not in the database"
-        
     """
     url = "https://projet-7-credit-score-api.herokuapp.com/prediction/{}".format(client_id)
     output = requests.request("GET", url)
