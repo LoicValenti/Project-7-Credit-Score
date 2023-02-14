@@ -1,5 +1,5 @@
 import pandas as pd
-
+import uvicorn
 from fastapi import FastAPI
 
 
@@ -36,3 +36,7 @@ async def root(client_id: int):
         output = "Enter a valid client number in the space above"
 
     return {"message": output}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host='0.0.0.0')
