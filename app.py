@@ -209,7 +209,7 @@ def update_output(client_id):
         output = "Client's application is not in the database"
         
     """
-    url = "https://projet-7-credit-score.herokuapp.com/prediction/{}".format(client_id)
+    url = "https://projet-7-credit-score-api.herokuapp.com/prediction/{}".format(client_id)
     output = requests.request("GET", url)
     return f'{json.loads(output.text)["message"]}.'
 
