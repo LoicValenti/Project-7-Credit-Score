@@ -2,7 +2,7 @@
 Credit score project with an emphasis on transparency and ease of use.
 
 
-## Data used to creat the dashboard
+## Data used to create the dashboard
 Credit Application Predict Probabilities.csv
 
 Credit Application Results.csv
@@ -11,6 +11,8 @@ Dataset_for_webapp.csv
 
 labels.csv
 
-## Code to generate the dashboard and the API 
+## Code to generate the dashboard 
+Present on the branch WEB-APP and hosted on https://projet-7-credit-score.herokuapp.com/
 
-app.py
+## API code
+Present on the branch API
