@@ -15,4 +15,4 @@ labels.csv
 Present on the branch WEB-APP and hosted on https://projet-7-credit-score.herokuapp.com/
 
 ## API code
-Present on the branch API
+Present on the branch API https://github.com/LoicValenti/Project-7-Credit-Score/tree/CLOUD-API-heroku
